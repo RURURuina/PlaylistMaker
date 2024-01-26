@@ -13,6 +13,7 @@
         android:gravity="center">
 
         <ImageView
+            android:id="@+id/back_button"
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:src="@drawable/back_ic"
