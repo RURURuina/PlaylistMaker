@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="main_screen_text_size">22sp</dimen>
+    <dimen name="main_corners_radius">16dp</dimen>
+    <dimen name="main_letters_spacing">-0.02</dimen>
+    <dimen name="main_margin_top">5dp</dimen>
+    <dimen name="settings_height">61dp</dimen>
+    <dimen name="settings_text_size">16sp</dimen>
+    <dimen name="default_padding">15dp</dimen>
+</resources>
