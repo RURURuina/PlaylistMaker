@@ -1,9 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SearchActivity">
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/default_padding"
+    style="">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <LinearLayout
+        android:id="@+id/back_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <ImageView
+            android:src="@drawable/back_ic"
+            style="@style/BackButton"
+            />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="25dp"
+            android:text="@string/search"
+            style="@style/SettingsMainString"/>
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:id="@+id/container">
+
+        <EditText
+            android:id="@+id/inputEditText"
+            style="@style/SearchString"
+            android:layout_width="match_parent"
+            android:layout_height="36dp"
+            android:background="@drawable/rounded_edit_text"
+            android:drawablePadding="8dp"
+            android:hint="@string/search"
+            android:inputType="textCapSentences"
+            android:lines="1"
+            android:paddingStart="12dp"
+            android:textSize="16sp"
+            tools:ignore="TouchTargetSizeCheck" />
+
+        <ImageView
+            android:id="@+id/clearIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|center_vertical"
+            android:src="@drawable/clear_ic"
+            android:visibility="gone"
+            android:layout_marginEnd="8dp"/>
+
+    </FrameLayout>
+</LinearLayout>
