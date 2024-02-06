@@ -20,7 +20,7 @@ class SettingsActivity : AppCompatActivity() {
 
 
         backButton.setOnClickListener {
-            onBackPressed()
+            finish()
         }
 
 

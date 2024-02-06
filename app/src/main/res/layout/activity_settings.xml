@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:orientation="vertical"
     android:padding="@dimen/default_padding"
+    android:background="?attr/colorPrimary"
     style="">
 
     <LinearLayout
@@ -42,13 +43,17 @@
 
         <Space style="@style/SettingsSpacing"/>
 
-        <Switch
-            android:id="@+id/theme_switcher"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:gravity= "center"
-            android:layout_marginEnd="-11dp"
-            tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+            <Switch
+                android:id="@+id/theme_switcher"
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:gravity="center"
+                tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+
 
     </LinearLayout>
 
@@ -71,6 +76,7 @@
             android:layout_height="wrap_content"
             android:src="@drawable/share_ic"
             android:layout_gravity="center"
+            android:layout_marginEnd="11dp"
             android:contentDescription="@string/share_apl" />
     </LinearLayout>
 
@@ -93,7 +99,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/support_ic"
+            android:layout_marginEnd="11dp"
             android:layout_gravity="center"
+
             android:contentDescription="@string/write_support" />
     </LinearLayout>
 
@@ -116,6 +124,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/accept_ic"
+            android:layout_marginEnd="11dp"
             android:layout_gravity="center"
             android:contentDescription="@string/terms_of_use" />
 

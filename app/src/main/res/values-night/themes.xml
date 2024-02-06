@@ -2,8 +2,8 @@
     <!-- Base application theme. -->
     <style name="Theme.MyApp" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/white</item>
-        <item name="colorSecondary">@color/black</item>
+        <item name="colorPrimary">@color/night_theme_bg</item>
+        <item name="colorSecondary">@color/night_theme_bg</item>
         <item name="android:statusBarColor">@color/black</item>
     </style>
 </resources>
