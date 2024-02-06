@@ -7,5 +7,6 @@
         <item name="android:textColorPrimary">@color/white</item>
         <item name="android:textColorSecondary">@color/text_gray</item>
         <item name="android:statusBarColor">@color/background_color</item>
+        <item name="colorControlActivated">@color/background_color</item>
     </style>
 </resources>

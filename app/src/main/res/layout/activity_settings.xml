@@ -44,14 +44,12 @@
         <Space style="@style/SettingsSpacing"/>
 
 
-            <Switch
-                android:id="@+id/theme_switcher"
-
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-
-                android:gravity="center"
-                tools:ignore="UseSwitchCompatOrMaterialXml" />
+        <Switch
+            android:id="@+id/theme_switcher"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            tools:ignore="UseSwitchCompatOrMaterialXml,TouchTargetSizeCheck" />
 
 
 
