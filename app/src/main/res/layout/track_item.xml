@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="61dp"
+    android:layout_height="60dp"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal"
     android:background="?attr/colorPrimary">
@@ -28,7 +28,7 @@
             android:id="@+id/trackName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:text="@string/track_name_xmpl"
+            tools:text="Yesterday (Remastered 2009)"
             style="@style/TrackName"/>
 
 
@@ -44,7 +44,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
-                tools:text="@string/artist_name_xmpl"
+                tools:text="The Beatles"
                 style="@style/AuthorAndDur" />
 
             <ImageView
@@ -58,7 +58,7 @@
                 android:layout_height="wrap_content"
                 style="@style/AuthorAndDur"
                 android:layout_marginStart="5dp"
-                tools:text="@string/track_duration_xmpl"
+                tools:text="2:55"
                 />
         </LinearLayout>
     </LinearLayout>

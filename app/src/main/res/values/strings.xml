@@ -13,9 +13,7 @@
     <string name="share_url" translatable="false">https://practicum.yandex.ru/android-developer/?from=catalog</string>
     <string name="terms_url" translatable="false">https://yandex.ru/legal/practicum_offer/</string>
     <string name="share_title">Поделиться приложением</string>
-    <string name="track_name_xmpl">Yesterday (Remastered 2009)</string>
-    <string name="artist_name_xmpl">The Beatles</string>
-    <string name="track_duration_xmpl">2:55</string>
+
 
     <string-array name="track_names">
         <item>Smells Like Teen Spirit</item>

@@ -13,7 +13,11 @@ class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val trackTime: TextView = itemView.findViewById(R.id.trackTime)
     private val artworkUrl100: ImageView = itemView.findViewById(R.id.artworkUrl100)
 
+    companion object {
+        const val ROUNDED_CORNER_RADIUS = 12
+    }
     fun bind(track: Track) {
+
         trackName.text = track.trackName
         artistName.text = track.artistName
         trackTime.text = track.trackTime
@@ -21,7 +25,7 @@ class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         Glide.with(itemView.context)
             .load(track.artworkUrl100)
             .placeholder(R.drawable.placeholder)
-            .transform(RoundedCorners(12))
+            .transform(RoundedCorners(ROUNDED_CORNER_RADIUS))
             .into(artworkUrl100)
 
     }
