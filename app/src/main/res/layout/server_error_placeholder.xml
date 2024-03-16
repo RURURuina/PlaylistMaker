@@ -1,0 +1,42 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/server_error_placeholder"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+
+    android:gravity="center">
+
+    <ImageView
+        android:id="@+id/errorImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/ServerErrorImg"/>
+
+    <TextView
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/server_error"
+        style="@style/ErrorTextAndNothingFoundText"
+        android:layout_marginTop="12dp"/>
+
+    <TextView
+
+        android:layout_width="312dp"
+        android:layout_height="wrap_content"
+        android:text="@string/server_error_text"
+        style="@style/ErrorTextAndNothingFoundText"
+        android:layout_marginTop="16dp"/>
+
+    <Button
+        android:id="@+id/updateButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/update"
+        style="@style/updateButton"
+        android:textAllCaps="false"
+        android:layout_marginTop="20dp"/>
+
+
+</LinearLayout>

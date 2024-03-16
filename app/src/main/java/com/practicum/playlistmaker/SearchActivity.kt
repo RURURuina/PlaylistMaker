@@ -6,17 +6,27 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 class SearchActivity : AppCompatActivity() {
 
     private lateinit var  adapter: TrackAdapter
     private lateinit var  inputEditText: EditText
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var nothingFoundPlaceHolder: LinearLayout
+    private lateinit var serverErrorPlaceholder: LinearLayout
     private var inputValue : String = ""
 
     companion object {
@@ -27,30 +37,27 @@ class SearchActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
+        val updateButton = findViewById<Button>(R.id.updateButton)
         val backButton = findViewById<LinearLayout>(R.id.back_button)
         inputEditText = findViewById(R.id.inputEditText)
         val clearButton = findViewById<ImageView>(R.id.clearIcon)
+         nothingFoundPlaceHolder = findViewById(R.id.nothing_found_placeholder)
+         serverErrorPlaceholder = findViewById(R.id.server_error_placeholder)
 
         backButton.setOnClickListener {
             finish()
         }
 
-        val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
-        recyclerView.layoutManager = LinearLayoutManager(this)
-
-        val trackNames = resources.getStringArray(R.array.track_names)
-        val artistNames = resources.getStringArray(R.array.artist_names)
-        val trackDurations = resources.getStringArray(R.array.track_durations)
-        val artworkUrl100 = resources.getStringArray(R.array.artworkUrl100)
-
-        val trackList = mutableListOf<Track>()
-
-        for (i in trackNames.indices) {
-            val track = Track(trackNames[i], artistNames[i], trackDurations[i], artworkUrl100[i])
-            trackList.add(track)
+        updateButton.setOnClickListener {
+            onUpdateButtonClick()
         }
 
-        adapter = TrackAdapter(trackList)
+        recyclerView = findViewById(R.id.recyclerView)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+
+
+
+        adapter = TrackAdapter()
         recyclerView.adapter = adapter
 
         clearButton.setOnClickListener {
@@ -58,6 +65,17 @@ class SearchActivity : AppCompatActivity() {
             val inputMethodManager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
             inputMethodManager.hideSoftInputFromWindow(inputEditText.windowToken, 0)
             inputEditText.clearFocus()
+            adapter.clearList()
+            hidePlaceholder()
+        }
+
+        inputEditText.setOnEditorActionListener {_, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                performSearch(inputEditText.text.toString())
+                true
+            } else {
+                false
+            }
         }
 
         val textWatcher = object : TextWatcher {
@@ -82,6 +100,45 @@ class SearchActivity : AppCompatActivity() {
 
     }
 
+    private fun performSearch (query: String) {
+        val retrofit = Retrofit.Builder()
+            .baseUrl(getString(R.string.itunes_url))
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val service = retrofit.create(ITunesService::class.java)
+        val call = service.search(query)
+
+        call.enqueue(object : Callback<SearchResponse> {
+            override fun onResponse (call: Call<SearchResponse>, response: Response<SearchResponse>) {
+                if (response.isSuccessful) {
+                    val searchResponse = response.body()
+                    searchResponse?.let {
+                        if (it.resultCount > 0) {
+                            adapter.updateList(it.results)
+                            recyclerView.scrollToPosition(0)
+                        } else {
+                            adapter.clearList()
+                            hidePlaceholder()
+                            showNoResultPlaceholder()
+                        }
+                    }
+                } else {
+                    hidePlaceholder()
+                    adapter.clearList()
+                    showServerErrorPlaceholder()
+                }
+            }
+
+            override fun onFailure(call: Call<SearchResponse>, t: Throwable) {
+                hidePlaceholder()
+                adapter.clearList()
+                showServerErrorPlaceholder()
+            }
+        })
+
+    }
+
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(INPUT_VALUE_KEY, inputValue)
@@ -91,5 +148,23 @@ class SearchActivity : AppCompatActivity() {
         super.onRestoreInstanceState(savedInstanceState)
         inputValue = savedInstanceState.getString(INPUT_VALUE_KEY, "")
         inputEditText.setText(inputValue)
+    }
+
+
+    private fun showNoResultPlaceholder() {
+        nothingFoundPlaceHolder.visibility = View.VISIBLE
+    }
+    private fun showServerErrorPlaceholder() {
+        serverErrorPlaceholder.visibility = View.VISIBLE
+    }
+    private fun hidePlaceholder() {
+
+        val nothingFoundPlaceholder = findViewById<LinearLayout>(R.id.nothing_found_placeholder)
+        nothingFoundPlaceholder.visibility = View.GONE
+        serverErrorPlaceholder.visibility = View.GONE
+    }
+    private fun onUpdateButtonClick () {
+        hidePlaceholder()
+        performSearch(inputEditText.text.toString())
     }
 }

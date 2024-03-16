@@ -6,6 +6,9 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val trackName: TextView = itemView.findViewById(R.id.trackName)
@@ -20,13 +23,17 @@ class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         trackName.text = track.trackName
         artistName.text = track.artistName
-        trackTime.text = track.trackTime
+        trackTime.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTimeMillis)
 
-        Glide.with(itemView.context)
-            .load(track.artworkUrl100)
-            .placeholder(R.drawable.placeholder)
-            .transform(RoundedCorners(ROUNDED_CORNER_RADIUS))
-            .into(artworkUrl100)
 
+        if (track.artworkUrl100.isNotEmpty()) {
+            Glide.with(itemView.context)
+                .load(track.artworkUrl100)
+                .placeholder(R.drawable.placeholder)
+                .transform(RoundedCorners(ROUNDED_CORNER_RADIUS))
+                .into(artworkUrl100)
+        } else {
+            artworkUrl100.setImageResource(R.drawable.placeholder)
+        }
     }
 }
