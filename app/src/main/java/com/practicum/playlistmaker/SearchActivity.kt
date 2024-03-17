@@ -1,7 +1,5 @@
 package com.practicum.playlistmaker
 
-import android.annotation.SuppressLint
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -12,13 +10,12 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 class SearchActivity : AppCompatActivity() {
 
@@ -28,6 +25,10 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var nothingFoundPlaceHolder: LinearLayout
     private lateinit var serverErrorPlaceholder: LinearLayout
     private var inputValue : String = ""
+
+    private val iTunesService: ITunesService by lazy {
+        RetrofitClient.getClient(getString(R.string.itunes_url)).create(ITunesService::class.java)
+    }
 
     companion object {
         private const val INPUT_VALUE_KEY = "input_value"
@@ -101,13 +102,7 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun performSearch (query: String) {
-        val retrofit = Retrofit.Builder()
-            .baseUrl(getString(R.string.itunes_url))
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
-        val service = retrofit.create(ITunesService::class.java)
-        val call = service.search(query)
+        val call = iTunesService.search(query)
 
         call.enqueue(object : Callback<SearchResponse> {
             override fun onResponse (call: Call<SearchResponse>, response: Response<SearchResponse>) {
