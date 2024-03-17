@@ -45,6 +45,8 @@
             android:hint="@string/search"
             android:inputType="textCapSentences"
             android:lines="1"
+            android:imeOptions="actionDone"
+            android:singleLine="true"
             android:paddingStart="12dp"
             android:textSize="16sp"
             tools:ignore="TouchTargetSizeCheck" />
@@ -61,11 +63,26 @@
 
     </FrameLayout>
 
+
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         />
+    <include layout="@layout/nothing_found_placeholder"
+        android:visibility="gone"
+        android:layout_marginTop="70dp"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
 
-    </LinearLayout>
+    <include layout="@layout/server_error_placeholder"
+        android:visibility="gone"
+        android:layout_marginTop="70dp"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+</LinearLayout>
