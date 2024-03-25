@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:orientation="vertical"
@@ -51,6 +52,8 @@
             android:textSize="16sp"
             tools:ignore="TouchTargetSizeCheck" />
 
+
+
         <ImageView
             android:id="@+id/clearIcon"
             android:layout_width="wrap_content"
@@ -63,14 +66,45 @@
 
     </FrameLayout>
 
+    <TextView
 
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+        android:id="@+id/you_search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        />
+        style="@style/youSearch"/>
+
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_marginTop="12dp"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                android:nestedScrollingEnabled="false"
+                />
+
+
+            <Button
+                android:id="@+id/history_clean_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/clearHistoryButton"/>
+        </LinearLayout>
+
+
+    </androidx.core.widget.NestedScrollView>
+
     <include layout="@layout/nothing_found_placeholder"
         android:visibility="gone"
         android:layout_marginTop="70dp"

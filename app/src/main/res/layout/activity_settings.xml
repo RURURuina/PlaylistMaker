@@ -33,25 +33,17 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/settings_height"
         android:orientation="horizontal"
+        android:gravity="center"
         android:layout_marginTop="40dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:text="@string/dark_mode"
-            style="@style/SettingsStrings"/>
 
-        <Space style="@style/SettingsSpacing"/>
-
-
-        <Switch
+        <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/theme_switcher"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            tools:ignore="UseSwitchCompatOrMaterialXml,TouchTargetSizeCheck" />
-
-
+            android:gravity="start|center_vertical"
+            android:text="@string/dark_mode"
+            style="@style/Switch" />
 
     </LinearLayout>
 

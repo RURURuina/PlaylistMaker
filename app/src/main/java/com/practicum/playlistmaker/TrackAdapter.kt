@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 
-class TrackAdapter() : RecyclerView.Adapter<TrackViewHolder>() {
+class TrackAdapter(private val listener: OnItemClickListener) : RecyclerView.Adapter<TrackViewHolder>() {
 
     private var trackList: MutableList<Track> = mutableListOf()
 
@@ -13,6 +13,10 @@ class TrackAdapter() : RecyclerView.Adapter<TrackViewHolder>() {
     fun updateList(trackList: MutableList<Track>) {
         this.trackList = trackList
         notifyDataSetChanged()
+    }
+
+    interface OnItemClickListener {
+        fun onItemClick(track: Track)
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -27,7 +31,11 @@ class TrackAdapter() : RecyclerView.Adapter<TrackViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: TrackViewHolder, position: Int) {
-        holder.bind(trackList[position])
+        val track = trackList[position]
+        holder.bind(track)
+        holder.itemView.setOnClickListener {
+            listener.onItemClick(track)
+        }
     }
 
     override fun getItemCount() = trackList.size
