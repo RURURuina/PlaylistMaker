@@ -7,6 +7,8 @@ import android.os.Bundle
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.Switch
+import com.google.android.material.materialswitch.MaterialSwitch
+import com.google.android.material.switchmaterial.SwitchMaterial
 
 class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -17,10 +19,20 @@ class SettingsActivity : AppCompatActivity() {
         val contactSupport = findViewById<LinearLayout>(R.id.contact_support)
         val termsOfUse = findViewById<LinearLayout>(R.id.terms_of_use)
         val shareApp = findViewById<LinearLayout>(R.id.share_application)
-
+        val themeSwitcher = findViewById<SwitchMaterial>(R.id.theme_switcher)
 
         backButton.setOnClickListener {
             finish()
+        }
+
+        themeSwitcher.isChecked = (applicationContext as App).themeSwitchState
+
+        themeSwitcher.setOnCheckedChangeListener { switcher, checked ->
+            (applicationContext as App).switchTheme(checked)
+            (applicationContext as App).setSwitchState(checked)
+            (applicationContext as App).saveSwitchState(checked)
+            (applicationContext as App).saveTheme(checked)
+
         }
 
 

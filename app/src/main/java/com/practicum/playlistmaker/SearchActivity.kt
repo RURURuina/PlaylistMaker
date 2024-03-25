@@ -10,7 +10,9 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import retrofit2.Call
@@ -24,6 +26,9 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var nothingFoundPlaceHolder: LinearLayout
     private lateinit var serverErrorPlaceholder: LinearLayout
+    private lateinit var searchHistory: SearchHistory
+    private lateinit var historyCleanButton: Button
+    private lateinit var youSearch: TextView
     private var inputValue : String = ""
 
     private val iTunesService: ITunesService by lazy {
@@ -38,12 +43,19 @@ class SearchActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
+        val sharedPreferences = getSharedPreferences("SearchHistory", MODE_PRIVATE)
+        searchHistory = SearchHistory(sharedPreferences)
+
+
         val updateButton = findViewById<Button>(R.id.updateButton)
         val backButton = findViewById<LinearLayout>(R.id.back_button)
         inputEditText = findViewById(R.id.inputEditText)
+        youSearch = findViewById(R.id.you_search)
         val clearButton = findViewById<ImageView>(R.id.clearIcon)
-         nothingFoundPlaceHolder = findViewById(R.id.nothing_found_placeholder)
-         serverErrorPlaceholder = findViewById(R.id.server_error_placeholder)
+        nothingFoundPlaceHolder = findViewById(R.id.nothing_found_placeholder)
+        serverErrorPlaceholder = findViewById(R.id.server_error_placeholder)
+        historyCleanButton = findViewById(R.id.history_clean_button)
+        val scrollView = findViewById<NestedScrollView>(R.id.scrollView)
 
         backButton.setOnClickListener {
             finish()
@@ -53,12 +65,32 @@ class SearchActivity : AppCompatActivity() {
             onUpdateButtonClick()
         }
 
+        historyCleanButton.setOnClickListener {
+            searchHistory.clearSearchHistory()
+            hideSearchHistory()
+            adapter.updateList(searchHistory.getSearchHistory())
+        }
+
         recyclerView = findViewById(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
 
 
-        adapter = TrackAdapter()
+        adapter = TrackAdapter(object : TrackAdapter.OnItemClickListener{
+            override fun onItemClick(track: Track) {
+                searchHistory.addTrackToHistory(track)
+
+            }
+        })
+
+            inputEditText.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+            if (hasFocus && inputEditText.text.isEmpty() && searchHistory.isNotEmpty()) {
+                showSearchHistory()
+           } else {
+               hideSearchHistory()
+           }
+        }
+
         recyclerView.adapter = adapter
 
         clearButton.setOnClickListener {
@@ -68,7 +100,14 @@ class SearchActivity : AppCompatActivity() {
             inputEditText.clearFocus()
             adapter.clearList()
             hidePlaceholder()
+            scrollView.smoothScrollTo(0 , 0)
+            searchHistoryVisibilityCondition()
+
         }
+
+        searchHistoryVisibilityCondition()
+
+
 
         inputEditText.setOnEditorActionListener {_, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -88,6 +127,17 @@ class SearchActivity : AppCompatActivity() {
                 inputValue = s?.toString() ?:""
                 clearButton.visibility = clearButtonVisibility(s)
 
+                if (inputEditText.hasFocus() && s?.isEmpty() == true && searchHistory.isNotEmpty()) {
+                    hidePlaceholder()
+                    showSearchHistory()
+                    loadSearchHistory()
+
+                } else {
+                    hidePlaceholder()
+                    hideSearchHistory()
+                    adapter.clearList()
+                }
+
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -101,6 +151,16 @@ class SearchActivity : AppCompatActivity() {
 
     }
 
+    override fun onResume() {
+        super.onResume()
+        loadSearchHistory()
+    }
+
+    private fun loadSearchHistory() {
+        val history = searchHistory.getSearchHistory()
+        adapter.updateList(history)
+    }
+
     private fun performSearch (query: String) {
         val call = iTunesService.search(query)
 
@@ -112,6 +172,7 @@ class SearchActivity : AppCompatActivity() {
                         if (it.resultCount > 0) {
                             adapter.updateList(it.results)
                             recyclerView.scrollToPosition(0)
+
                         } else {
                             adapter.clearList()
                             hidePlaceholder()
@@ -121,6 +182,7 @@ class SearchActivity : AppCompatActivity() {
                 } else {
                     hidePlaceholder()
                     adapter.clearList()
+                    hideSearchHistory()
                     showServerErrorPlaceholder()
                 }
             }
@@ -128,6 +190,7 @@ class SearchActivity : AppCompatActivity() {
             override fun onFailure(call: Call<SearchResponse>, t: Throwable) {
                 hidePlaceholder()
                 adapter.clearList()
+                hideSearchHistory()
                 showServerErrorPlaceholder()
             }
         })
@@ -161,5 +224,26 @@ class SearchActivity : AppCompatActivity() {
     private fun onUpdateButtonClick () {
         hidePlaceholder()
         performSearch(inputEditText.text.toString())
+    }
+
+    private fun showSearchHistory() {
+        historyCleanButton.visibility = View.VISIBLE
+        youSearch.visibility = View.VISIBLE
+    }
+
+    private fun hideSearchHistory() {
+        historyCleanButton.visibility = View.GONE
+        youSearch.visibility = View.GONE
+    }
+    private fun searchHistoryVisibilityCondition() {
+        if(searchHistory.isNotEmpty()) {
+            hidePlaceholder()
+            showSearchHistory()
+            loadSearchHistory()
+        } else {
+            hidePlaceholder()
+            hideSearchHistory()
+            adapter.clearList()
+        }
     }
 }

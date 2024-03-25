@@ -13,10 +13,12 @@
     <string name="share_url" translatable="false">https://practicum.yandex.ru/android-developer/?from=catalog</string>
     <string name="terms_url" translatable="false">https://yandex.ru/legal/practicum_offer/</string>
     <string name="share_title">Поделиться приложением</string>
-    <string name="itunes_url">https://itunes.apple.com</string>
+    <string name="itunes_url" translatable="false">https://itunes.apple.com</string>
     <string name="server_error">Проблемы со связью</string>
     <string name="server_error_text">Загрузка не удалась. Проверьте подключение к интернету</string>
     <string name="update">Обновить</string>
     <string name="nothing_found">Ничего не нашлось</string>
+    <string name="you_search">Вы искали</string>
+    <string name="clear_search_history">Очистить историю</string>
 
 </resources>
