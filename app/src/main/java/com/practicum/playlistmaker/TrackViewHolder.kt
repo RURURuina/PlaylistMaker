@@ -7,7 +7,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import java.text.SimpleDateFormat
-import java.util.Date
 import java.util.Locale
 
 class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -26,7 +25,7 @@ class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         trackTime.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTimeMillis)
 
 
-        if (track.artworkUrl100.isNotEmpty()) {
+        if (track.artworkUrl100?.isNotEmpty() == true) {
             Glide.with(itemView.context)
                 .load(track.artworkUrl100)
                 .placeholder(R.drawable.placeholder)
@@ -35,5 +34,7 @@ class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         } else {
             artworkUrl100.setImageResource(R.drawable.placeholder)
         }
+
+
     }
 }

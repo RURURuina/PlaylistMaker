@@ -1,5 +1,6 @@
 package com.practicum.playlistmaker
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -21,15 +22,15 @@ import retrofit2.Response
 
 class SearchActivity : AppCompatActivity() {
 
-    private lateinit var  adapter: TrackAdapter
-    private lateinit var  inputEditText: EditText
+    private lateinit var adapter: TrackAdapter
+    private lateinit var inputEditText: EditText
     private lateinit var recyclerView: RecyclerView
     private lateinit var nothingFoundPlaceHolder: LinearLayout
     private lateinit var serverErrorPlaceholder: LinearLayout
     private lateinit var searchHistory: SearchHistory
     private lateinit var historyCleanButton: Button
     private lateinit var youSearch: TextView
-    private var inputValue : String = ""
+    private var inputValue: String = ""
 
     private val iTunesService: ITunesService by lazy {
         RetrofitClient.getClient(getString(R.string.itunes_url)).create(ITunesService::class.java)
@@ -37,6 +38,7 @@ class SearchActivity : AppCompatActivity() {
 
     companion object {
         private const val INPUT_VALUE_KEY = "input_value"
+        const val AUDIO_PLAYER_KEY = "track"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -76,19 +78,21 @@ class SearchActivity : AppCompatActivity() {
 
 
 
-        adapter = TrackAdapter(object : TrackAdapter.OnItemClickListener{
+        adapter = TrackAdapter(object : TrackAdapter.OnItemClickListener {
             override fun onItemClick(track: Track) {
                 searchHistory.addTrackToHistory(track)
-
+                val intent = Intent(this@SearchActivity, AudioPlayerActivity::class.java)
+                intent.putExtra(AUDIO_PLAYER_KEY, track)
+                this@SearchActivity.startActivity(intent)
             }
         })
 
-            inputEditText.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
+        inputEditText.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
             if (hasFocus && inputEditText.text.isEmpty() && searchHistory.isNotEmpty()) {
                 showSearchHistory()
-           } else {
-               hideSearchHistory()
-           }
+            } else {
+                hideSearchHistory()
+            }
         }
 
         recyclerView.adapter = adapter
@@ -100,7 +104,7 @@ class SearchActivity : AppCompatActivity() {
             inputEditText.clearFocus()
             adapter.clearList()
             hidePlaceholder()
-            scrollView.smoothScrollTo(0 , 0)
+            scrollView.smoothScrollTo(0, 0)
             searchHistoryVisibilityCondition()
 
         }
@@ -109,7 +113,7 @@ class SearchActivity : AppCompatActivity() {
 
 
 
-        inputEditText.setOnEditorActionListener {_, actionId, _ ->
+        inputEditText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 performSearch(inputEditText.text.toString())
                 true
@@ -124,7 +128,7 @@ class SearchActivity : AppCompatActivity() {
             }
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                inputValue = s?.toString() ?:""
+                inputValue = s?.toString() ?: ""
                 clearButton.visibility = clearButtonVisibility(s)
 
                 if (inputEditText.hasFocus() && s?.isEmpty() == true && searchHistory.isNotEmpty()) {
@@ -144,28 +148,28 @@ class SearchActivity : AppCompatActivity() {
 
             }
 
-            private fun clearButtonVisibility (s: CharSequence?) : Int =  if (s.isNullOrEmpty()) View.GONE else View.VISIBLE
+            private fun clearButtonVisibility(s: CharSequence?): Int =
+                if (s.isNullOrEmpty()) View.GONE else View.VISIBLE
 
         }
         inputEditText.addTextChangedListener(textWatcher)
 
     }
 
-    override fun onResume() {
-        super.onResume()
-        loadSearchHistory()
-    }
 
     private fun loadSearchHistory() {
         val history = searchHistory.getSearchHistory()
         adapter.updateList(history)
     }
 
-    private fun performSearch (query: String) {
+    private fun performSearch(query: String) {
         val call = iTunesService.search(query)
 
         call.enqueue(object : Callback<SearchResponse> {
-            override fun onResponse (call: Call<SearchResponse>, response: Response<SearchResponse>) {
+            override fun onResponse(
+                call: Call<SearchResponse>,
+                response: Response<SearchResponse>
+            ) {
                 if (response.isSuccessful) {
                     val searchResponse = response.body()
                     searchResponse?.let {
@@ -212,16 +216,19 @@ class SearchActivity : AppCompatActivity() {
     private fun showNoResultPlaceholder() {
         nothingFoundPlaceHolder.visibility = View.VISIBLE
     }
+
     private fun showServerErrorPlaceholder() {
         serverErrorPlaceholder.visibility = View.VISIBLE
     }
+
     private fun hidePlaceholder() {
 
         val nothingFoundPlaceholder = findViewById<LinearLayout>(R.id.nothing_found_placeholder)
         nothingFoundPlaceholder.visibility = View.GONE
         serverErrorPlaceholder.visibility = View.GONE
     }
-    private fun onUpdateButtonClick () {
+
+    private fun onUpdateButtonClick() {
         hidePlaceholder()
         performSearch(inputEditText.text.toString())
     }
@@ -235,8 +242,9 @@ class SearchActivity : AppCompatActivity() {
         historyCleanButton.visibility = View.GONE
         youSearch.visibility = View.GONE
     }
+
     private fun searchHistoryVisibilityCondition() {
-        if(searchHistory.isNotEmpty()) {
+        if (searchHistory.isNotEmpty()) {
             hidePlaceholder()
             showSearchHistory()
             loadSearchHistory()
