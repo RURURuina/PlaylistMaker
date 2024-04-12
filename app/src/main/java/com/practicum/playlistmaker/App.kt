@@ -2,15 +2,14 @@ package com.practicum.playlistmaker
 
 import android.app.Application
 import android.content.Context
+import android.content.res.Configuration
 import androidx.appcompat.app.AppCompatDelegate
 
 
-class App: Application() {
+class App : Application() {
 
 
-
-    companion object{
-        private const val DEFAULT_THEME = false
+    companion object {
         private const val THEME_KEY = "theme_key"
         private const val THEME_FILE_NAME = "theme"
         private const val SWITCH_STATE_KEY = "switch_key"
@@ -19,10 +18,17 @@ class App: Application() {
     var themeSwitchState = false
     override fun onCreate() {
         super.onCreate()
+
         val sharedPreferences = getSharedPreferences(THEME_FILE_NAME, Context.MODE_PRIVATE)
-        val darkThemeEnabled = sharedPreferences.getBoolean(THEME_KEY, DEFAULT_THEME)
+        val darkThemeEnabled = sharedPreferences.getBoolean(THEME_KEY, isSystemDarkTheme())
         switchTheme(darkThemeEnabled)
         themeSwitchState = sharedPreferences.getBoolean(SWITCH_STATE_KEY, false)
+    }
+
+    private fun isSystemDarkTheme(): Boolean {
+        val systemDefaultNightMode =
+            resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+        return systemDefaultNightMode == Configuration.UI_MODE_NIGHT_YES
     }
 
     fun saveTheme(darkThemeEnabled: Boolean) {
@@ -33,9 +39,10 @@ class App: Application() {
 
     fun saveSwitchState(checked: Boolean) {
         themeSwitchState = checked
-        val sharedPreferences = getSharedPreferences(THEME_FILE_NAME,Context.MODE_PRIVATE)
+        val sharedPreferences = getSharedPreferences(THEME_FILE_NAME, Context.MODE_PRIVATE)
         sharedPreferences.edit().putBoolean(SWITCH_STATE_KEY, checked).apply()
     }
+
     fun setSwitchState(checked: Boolean) {
         themeSwitchState = checked
     }
