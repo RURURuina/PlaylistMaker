@@ -5,7 +5,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 
-class TrackAdapter(private val listener: OnItemClickListener) : RecyclerView.Adapter<TrackViewHolder>() {
+class TrackAdapter(private val listener: OnItemClickListener) :
+    RecyclerView.Adapter<TrackViewHolder>() {
 
     private var trackList: MutableList<Track> = mutableListOf()
 

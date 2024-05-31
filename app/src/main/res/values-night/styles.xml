@@ -196,4 +196,9 @@
         <item name="iconTint">@color/white</item>
     </style>
 
+    <style name="progressBar">
+        <item name="android:indeterminateTint">@color/white</item>
+        <item name="android:layout_marginTop">200dp</item>
+    </style>
+
 </resources>
