@@ -196,7 +196,7 @@
     </style>
 
     <style name="progressBar">
-        <item name="android:indeterminateTint">@color/black</item>
+        <item name="android:indeterminateTint">@color/progress_bar_blue</item>
         <item name="android:layout_marginTop">200dp</item>
     </style>
 </resources>
