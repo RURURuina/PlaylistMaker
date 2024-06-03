@@ -18,11 +18,13 @@ class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     companion object {
         const val ROUNDED_CORNER_RADIUS = 12
     }
+
     fun bind(track: Track) {
 
         trackName.text = track.trackName
         artistName.text = track.artistName
-        trackTime.text = SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTimeMillis)
+        trackTime.text =
+            SimpleDateFormat("mm:ss", Locale.getDefault()).format(track.trackTimeMillis)
 
 
         if (track.artworkUrl100?.isNotEmpty() == true) {

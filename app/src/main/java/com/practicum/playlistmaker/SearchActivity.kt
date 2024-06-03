@@ -2,6 +2,8 @@ package com.practicum.playlistmaker
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
@@ -11,6 +13,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.NestedScrollView
@@ -30,6 +33,7 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var searchHistory: SearchHistory
     private lateinit var historyCleanButton: Button
     private lateinit var youSearch: TextView
+    private lateinit var progressBar: ProgressBar
     private var inputValue: String = ""
 
     private val iTunesService: ITunesService by lazy {
@@ -39,7 +43,22 @@ class SearchActivity : AppCompatActivity() {
     companion object {
         private const val INPUT_VALUE_KEY = "input_value"
         const val AUDIO_PLAYER_KEY = "track"
+        private const val CLICK_DEBOUNCE_DELAY = 1000L
+        private const val SEARCH_DEBOUNCE_DELAY = 2000L
     }
+
+    private var isClickAllowed = true
+    private val handler = Handler(Looper.getMainLooper())
+
+    private fun clickDebounce(): Boolean {
+        val current = isClickAllowed
+        if (isClickAllowed) {
+            isClickAllowed = false
+            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+        }
+        return current
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,7 +67,7 @@ class SearchActivity : AppCompatActivity() {
         val sharedPreferences = getSharedPreferences("SearchHistory", MODE_PRIVATE)
         searchHistory = SearchHistory(sharedPreferences)
 
-
+        progressBar = findViewById(R.id.progressBar)
         val updateButton = findViewById<Button>(R.id.updateButton)
         val backButton = findViewById<LinearLayout>(R.id.back_button)
         inputEditText = findViewById(R.id.inputEditText)
@@ -58,6 +77,7 @@ class SearchActivity : AppCompatActivity() {
         serverErrorPlaceholder = findViewById(R.id.server_error_placeholder)
         historyCleanButton = findViewById(R.id.history_clean_button)
         val scrollView = findViewById<NestedScrollView>(R.id.scrollView)
+
 
         backButton.setOnClickListener {
             finish()
@@ -81,9 +101,12 @@ class SearchActivity : AppCompatActivity() {
         adapter = TrackAdapter(object : TrackAdapter.OnItemClickListener {
             override fun onItemClick(track: Track) {
                 searchHistory.addTrackToHistory(track)
-                val intent = Intent(this@SearchActivity, AudioPlayerActivity::class.java)
-                intent.putExtra(AUDIO_PLAYER_KEY, track)
-                this@SearchActivity.startActivity(intent)
+
+                if (clickDebounce()) {
+                    val intent = Intent(this@SearchActivity, AudioPlayerActivity::class.java)
+                    intent.putExtra(AUDIO_PLAYER_KEY, track)
+                    this@SearchActivity.startActivity(intent)
+                }
             }
         })
 
@@ -130,6 +153,10 @@ class SearchActivity : AppCompatActivity() {
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 inputValue = s?.toString() ?: ""
                 clearButton.visibility = clearButtonVisibility(s)
+                if (s?.isEmpty() == false) {
+                    searchDebounce(inputValue)
+                }
+
 
                 if (inputEditText.hasFocus() && s?.isEmpty() == true && searchHistory.isNotEmpty()) {
                     hidePlaceholder()
@@ -164,12 +191,14 @@ class SearchActivity : AppCompatActivity() {
 
     private fun performSearch(query: String) {
         val call = iTunesService.search(query)
-
+        hidePlaceholder()
+        progressBar.visibility = View.VISIBLE
         call.enqueue(object : Callback<SearchResponse> {
             override fun onResponse(
                 call: Call<SearchResponse>,
                 response: Response<SearchResponse>
             ) {
+                progressBar.visibility = View.GONE
                 if (response.isSuccessful) {
                     val searchResponse = response.body()
                     searchResponse?.let {
@@ -192,6 +221,7 @@ class SearchActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<SearchResponse>, t: Throwable) {
+                progressBar.visibility = View.GONE
                 hidePlaceholder()
                 adapter.clearList()
                 hideSearchHistory()
@@ -199,6 +229,18 @@ class SearchActivity : AppCompatActivity() {
             }
         })
 
+    }
+
+    private var currentQuery: String? = null
+    private val searchRunnable = Runnable {
+        currentQuery?.let { performSearch(it) }
+    }
+
+
+    private fun searchDebounce(query: String) {
+        currentQuery = query
+        handler.removeCallbacks(searchRunnable)
+        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
