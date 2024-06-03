@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.presentation.activities
 
 import android.media.MediaPlayer
 import android.os.Build
@@ -12,30 +12,31 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.practicum.playlistmaker.SearchActivity.Companion.AUDIO_PLAYER_KEY
+import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.data.repositories.MediaPlayerRepositoryImpl
+import com.practicum.playlistmaker.data.repositories.MediaPlayerRepository
+import com.practicum.playlistmaker.domain.models.PlayerState
+import com.practicum.playlistmaker.domain.models.Track
+import com.practicum.playlistmaker.presentation.TrackViewHolder
+import com.practicum.playlistmaker.presentation.activities.SearchActivity.Companion.AUDIO_PLAYER_KEY
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 class AudioPlayerActivity() : AppCompatActivity() {
 
-    private var mediaPlayer = MediaPlayer()
+    private lateinit var mediaPlayerRepository: MediaPlayerRepository
 
-    companion object {
-        private const val STATE_DEFAULT = 0
-        private const val STATE_PREPARED = 1
-        private const val STATE_PLAYING = 2
-        private const val STATE_PAUSED = 3
-    }
 
-    private var playerState = STATE_DEFAULT
+
+    private var playerState = PlayerState.DEFAULT
     private lateinit var playButton: ImageView
     private lateinit var timer: TextView
     private val handler = Handler(Looper.getMainLooper())
 
     private val updateTimer = object : Runnable {
         override fun run() {
-            if (mediaPlayer.isPlaying) {
-                val currentPosition = mediaPlayer.currentPosition
+            if (mediaPlayerRepository.isPlaying()) {
+                val currentPosition = mediaPlayerRepository.getCurrentPosition()
                 timer.text = formatTime(currentPosition)
                 handler.postDelayed(this, 500)
             }
@@ -45,6 +46,9 @@ class AudioPlayerActivity() : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_audioplayer)
+
+        val mediaPlayer = MediaPlayer()
+        mediaPlayerRepository = MediaPlayerRepositoryImpl(mediaPlayer)
 
         val track =
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.S_V2) {
@@ -121,20 +125,17 @@ class AudioPlayerActivity() : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         handler.removeCallbacks(updateTimer)
-        mediaPlayer.release()
+        mediaPlayerRepository.releasePlayer()
     }
 
     private fun preparePlayer(previewUrl: String?) {
-        mediaPlayer.setDataSource(previewUrl)
-        mediaPlayer.prepareAsync()
-        mediaPlayer.setOnPreparedListener {
+        mediaPlayerRepository.preparePlayer(previewUrl, {
             playButton.isEnabled = true
-            playerState = STATE_PREPARED
-        }
-        mediaPlayer.setOnCompletionListener {
+            playerState = PlayerState.PREPARED
+        }, {
             onTimerComplete()
-            playerState = STATE_PREPARED
-        }
+            playerState = PlayerState.PREPARED
+        })
     }
 
     private fun onTimerComplete() {
@@ -145,30 +146,27 @@ class AudioPlayerActivity() : AppCompatActivity() {
     }
 
     private fun startPlayer() {
-        mediaPlayer.start()
+        mediaPlayerRepository.startPlayer()
         playButton.setImageResource(R.drawable.pause)
         handler.post(updateTimer)
-        playerState = STATE_PLAYING
+        playerState = PlayerState.PLAYING
     }
 
     private fun pausePlayer() {
-        mediaPlayer.pause()
+        mediaPlayerRepository.pausePlayer()
         playButton.setImageResource(R.drawable.play)
-        playerState = STATE_PAUSED
+        playerState = PlayerState.PAUSED
         handler.removeCallbacks(updateTimer)
     }
 
     private fun playbackControl() {
         when (playerState) {
-            STATE_PLAYING -> {
-                pausePlayer()
-            }
-
-            STATE_PREPARED, STATE_PAUSED -> {
-                startPlayer()
+            PlayerState.PLAYING -> pausePlayer()
+            PlayerState.PREPARED, PlayerState.PAUSED -> startPlayer()
+            else -> Unit
             }
         }
-    }
+
 
     private fun formatTime(milliseconds: Int): String {
         val formatter = SimpleDateFormat("mm:ss", Locale.getDefault())
