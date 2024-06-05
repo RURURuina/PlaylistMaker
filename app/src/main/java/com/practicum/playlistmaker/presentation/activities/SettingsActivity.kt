@@ -1,14 +1,13 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.presentation.activities
 
 import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.ImageView
 import android.widget.LinearLayout
-import android.widget.Switch
-import com.google.android.material.materialswitch.MaterialSwitch
 import com.google.android.material.switchmaterial.SwitchMaterial
+import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.presentation.ui.App
 
 class SettingsActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

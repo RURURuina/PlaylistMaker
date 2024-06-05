@@ -1,4 +1,4 @@
-package com.practicum.playlistmaker
+package com.practicum.playlistmaker.presentation.activities
 
 import android.content.Intent
 import android.os.Bundle
@@ -19,6 +19,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.NestedScrollView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.practicum.playlistmaker.R
+import com.practicum.playlistmaker.data.network.RetrofitClient
+import com.practicum.playlistmaker.data.SearchHistory
+import com.practicum.playlistmaker.data.dto.SearchResponse
+import com.practicum.playlistmaker.domain.models.Track
+import com.practicum.playlistmaker.data.network.ITunesService
+import com.practicum.playlistmaker.presentation.TrackAdapter
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
