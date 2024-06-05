@@ -1,6 +1,5 @@
 package com.practicum.playlistmaker.presentation.activities
 
-import android.media.MediaPlayer
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -12,9 +11,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.practicum.playlistmaker.Creator
 import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.data.repositories.MediaPlayerRepositoryImpl
-import com.practicum.playlistmaker.data.repositories.MediaPlayerRepository
+import com.practicum.playlistmaker.domain.api.MediaPlayerInteractor
 import com.practicum.playlistmaker.domain.models.PlayerState
 import com.practicum.playlistmaker.domain.models.Track
 import com.practicum.playlistmaker.presentation.TrackViewHolder
@@ -24,7 +23,7 @@ import java.util.Locale
 
 class AudioPlayerActivity() : AppCompatActivity() {
 
-    private lateinit var mediaPlayerRepository: MediaPlayerRepository
+    private lateinit var mediaPlayerInteractor: MediaPlayerInteractor
 
 
 
@@ -35,8 +34,8 @@ class AudioPlayerActivity() : AppCompatActivity() {
 
     private val updateTimer = object : Runnable {
         override fun run() {
-            if (mediaPlayerRepository.isPlaying()) {
-                val currentPosition = mediaPlayerRepository.getCurrentPosition()
+            if (mediaPlayerInteractor.isPlaying()) {
+                val currentPosition = mediaPlayerInteractor.getCurrentPosition()
                 timer.text = formatTime(currentPosition)
                 handler.postDelayed(this, 500)
             }
@@ -47,8 +46,8 @@ class AudioPlayerActivity() : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_audioplayer)
 
-        val mediaPlayer = MediaPlayer()
-        mediaPlayerRepository = MediaPlayerRepositoryImpl(mediaPlayer)
+
+        mediaPlayerInteractor = Creator.mediaPlayerCreator()
 
         val track =
             if (Build.VERSION.SDK_INT > Build.VERSION_CODES.S_V2) {
@@ -125,11 +124,11 @@ class AudioPlayerActivity() : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         handler.removeCallbacks(updateTimer)
-        mediaPlayerRepository.releasePlayer()
+        mediaPlayerInteractor.releasePlayer()
     }
 
     private fun preparePlayer(previewUrl: String?) {
-        mediaPlayerRepository.preparePlayer(previewUrl, {
+        mediaPlayerInteractor.preparePlayer(previewUrl, {
             playButton.isEnabled = true
             playerState = PlayerState.PREPARED
         }, {
@@ -146,14 +145,14 @@ class AudioPlayerActivity() : AppCompatActivity() {
     }
 
     private fun startPlayer() {
-        mediaPlayerRepository.startPlayer()
+        mediaPlayerInteractor.startPlayer()
         playButton.setImageResource(R.drawable.pause)
         handler.post(updateTimer)
         playerState = PlayerState.PLAYING
     }
 
     private fun pausePlayer() {
-        mediaPlayerRepository.pausePlayer()
+        mediaPlayerInteractor.pausePlayer()
         playButton.setImageResource(R.drawable.play)
         playerState = PlayerState.PAUSED
         handler.removeCallbacks(updateTimer)
