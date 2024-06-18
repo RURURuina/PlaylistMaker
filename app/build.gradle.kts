@@ -36,6 +36,8 @@ android {
 }
 
 dependencies {
+    implementation ("androidx.activity:activity-ktx:1.2.3")
+    implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1")
     implementation ("com.google.code.gson:gson:2.10")
     implementation ("com.google.android.material:material:1.6.1")
     implementation ("com.github.bumptech.glide:glide:4.14.2")
