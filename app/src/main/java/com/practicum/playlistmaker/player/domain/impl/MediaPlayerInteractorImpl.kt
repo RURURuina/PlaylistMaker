@@ -14,6 +14,12 @@ class MediaPlayerInteractorImpl(private val repository: MediaPlayerRepository) :
         repository.preparePlayer(previewUrl, onPrepared, onCompletion)
     }
 
+    override val playerCurrentPosition: Int
+        get() = repository.playerCurrentPosition
+
+    override val playerDuration: Int
+        get() = repository.playerDuration
+
     override fun startPlayer() {
         repository.startPlayer()
     }

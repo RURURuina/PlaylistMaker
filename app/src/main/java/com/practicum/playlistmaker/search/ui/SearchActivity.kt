@@ -22,7 +22,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.player.ui.AudioPlayerActivity
-import com.practicum.playlistmaker.search.data.preferences.SearchHistory
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.ui.adapters.TrackAdapter
 import com.practicum.playlistmaker.search.ui.viewmodel.SearchViewModel
@@ -35,7 +34,7 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var nothingFoundPlaceHolder: LinearLayout
     private lateinit var serverErrorPlaceholder: LinearLayout
-    private lateinit var searchHistory: SearchHistory
+    private lateinit var searchHistory: MutableList<Track?>
     private lateinit var historyCleanButton: Button
     private lateinit var youSearch: TextView
     private lateinit var progressBar: ProgressBar
@@ -71,8 +70,7 @@ class SearchActivity : AppCompatActivity() {
         val factory = SearchViewModelFactory(application)
         viewModel = ViewModelProvider(this, factory).get(SearchViewModel::class.java)
 
-        val sharedPreferences = getSharedPreferences("SearchHistory", MODE_PRIVATE)
-        searchHistory = SearchHistory(sharedPreferences)
+
 
         progressBar = findViewById(R.id.progressBar)
         val updateButton = findViewById<Button>(R.id.updateButton)
@@ -97,7 +95,7 @@ class SearchActivity : AppCompatActivity() {
         historyCleanButton.setOnClickListener {
             viewModel.clearSearchHistory()
             hideSearchHistory()
-            adapter.updateList(viewModel.getSearchHistory())
+
         }
 
         recyclerView = findViewById(R.id.recyclerView)
@@ -116,6 +114,16 @@ class SearchActivity : AppCompatActivity() {
                 }
             }
         })
+
+        viewModel.searchHistory.observe(this) { history ->
+            searchHistory = history
+            if (history.isNotEmpty()) {
+                adapter.updateList(history)
+                showSearchHistory()
+            } else {
+                hideSearchHistory()
+            }
+        }
 
         inputEditText.onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
             if (hasFocus && inputEditText.text.isEmpty() && searchHistory.isNotEmpty()) {
@@ -165,11 +173,9 @@ class SearchActivity : AppCompatActivity() {
                 }
 
 
-                if (inputEditText.hasFocus() && s?.isEmpty() == true && searchHistory.isNotEmpty()) {
+                if (inputEditText.hasFocus() && s.isNullOrEmpty() && viewModel.searchHistory.value?.isNotEmpty() == true) {
                     hidePlaceholder()
                     showSearchHistory()
-                    loadSearchHistory()
-
                 } else {
                     hidePlaceholder()
                     hideSearchHistory()
@@ -204,13 +210,11 @@ class SearchActivity : AppCompatActivity() {
             adapter.clearList()
             showServerErrorPlaceholder()
         }
-    }
 
 
-    private fun loadSearchHistory() {
-        val history: MutableList<Track?> = viewModel.getSearchHistory()
-        adapter.updateList(history)
+        viewModel.loadSearchHistory()
     }
+
 
     private fun performSearch(query: String) {
         progressBar.visibility = View.VISIBLE
@@ -270,13 +274,14 @@ class SearchActivity : AppCompatActivity() {
     private fun hideSearchHistory() {
         historyCleanButton.visibility = View.GONE
         youSearch.visibility = View.GONE
+        adapter.clearList()
     }
 
     private fun searchHistoryVisibilityCondition() {
-        if (searchHistory.isNotEmpty()) {
+        if (viewModel.searchHistory.value?.isNotEmpty() == true) {
             hidePlaceholder()
             showSearchHistory()
-            loadSearchHistory()
+
         } else {
             hidePlaceholder()
             hideSearchHistory()

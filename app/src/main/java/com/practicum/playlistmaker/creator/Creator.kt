@@ -2,6 +2,7 @@ package com.practicum.playlistmaker.creator
 
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
+import android.content.SharedPreferences
 import android.media.MediaPlayer
 import com.practicum.playlistmaker.player.data.impl.MediaPlayerRepositoryImpl
 import com.practicum.playlistmaker.player.domain.api.MediaPlayerInteractor
@@ -20,6 +21,7 @@ import com.practicum.playlistmaker.share.domain.impl.SharingInteractorImpl
 object Creator {
 
     const val THEME = "playlistmaker_theme"
+    private const val SEARCH_HISTORY = "SearchHistory"
     fun mediaPlayerCreator(): MediaPlayerInteractor {
 
         val mediaPlayer = MediaPlayer()
@@ -46,5 +48,9 @@ object Creator {
 
     fun provideSharingInteractor(context: Context): SharingInteractor {
         return SharingInteractorImpl(getExternalNavigator(context))
+    }
+
+    fun provideSharedPreferences(context: Context): SharedPreferences {
+        return context.getSharedPreferences(SEARCH_HISTORY, MODE_PRIVATE)
     }
 }

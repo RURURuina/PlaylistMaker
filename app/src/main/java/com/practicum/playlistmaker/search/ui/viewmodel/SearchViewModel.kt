@@ -13,6 +13,9 @@ class SearchViewModel(private val interactor: TrackInteractor) : ViewModel() {
     private val _error = MutableLiveData<String>()
     val error: LiveData<String> get() = _error
 
+    private val _searchHistory = MutableLiveData<MutableList<Track?>>()
+    val searchHistory: LiveData<MutableList<Track?>> get() = _searchHistory
+
     fun searchTracks(term: String) {
         interactor.searchTracks(term) { result ->
             result.fold(
@@ -26,8 +29,8 @@ class SearchViewModel(private val interactor: TrackInteractor) : ViewModel() {
         }
     }
 
-    fun getSearchHistory(): MutableList<Track?> {
-        return interactor.getSearchHistory()
+    fun loadSearchHistory() {
+        _searchHistory.postValue(interactor.getSearchHistory())
     }
 
     fun addTrackToHistory(track: Track) {

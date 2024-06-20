@@ -10,8 +10,9 @@ import retrofit2.Response
 
 class TrackRepositoryImpl(
     private val iTunesService: ITunesService,
-    private val searchHistory: SearchHistory
-) : TrackRepository {
+    private val searchHistory: SearchHistory,
+
+    ) : TrackRepository {
 
     override fun searchTracks(term: String, callback: (Result<MutableList<Track?>>) -> Unit) {
         val call = iTunesService.search(term)
@@ -41,7 +42,13 @@ class TrackRepositoryImpl(
     }
 
     override fun addTrackToHistory(track: Track) {
-        searchHistory.addTrackToHistory(track)
+        val history = searchHistory.getSearchHistory()
+        history.removeIf { it?.trackId == track.trackId }
+        history.add(0, track)
+        if (history.size > SearchHistory.MAX_HISTORY_SIZE) {
+            history.removeAt(history.size - 1)
+        }
+        searchHistory.saveSearchHistory(history)
     }
 
     override fun clearSearchHistory() {

@@ -2,8 +2,6 @@ package com.practicum.playlistmaker.player.ui
 
 import android.os.Build
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
@@ -17,7 +15,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.creator.Creator
-import com.practicum.playlistmaker.player.domain.models.PlayerState
+import com.practicum.playlistmaker.player.ui.model.PlayerState
 import com.practicum.playlistmaker.player.ui.view_model.MediaPlayerViewModel
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.ui.SearchActivity.Companion.AUDIO_PLAYER_KEY
@@ -38,19 +36,9 @@ class AudioPlayerActivity : AppCompatActivity() {
         }
     }
 
-
     private lateinit var playButton: ImageView
     private lateinit var timer: TextView
-    private val handler = Handler(Looper.getMainLooper())
 
-    private val updateTimer = object : Runnable {
-        override fun run() {
-            if (viewModel.isPlaying()) {
-                viewModel.updateCurrentPosition()
-                handler.postDelayed(this, 500)
-            }
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,10 +46,10 @@ class AudioPlayerActivity : AppCompatActivity() {
 
 
         val track =
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.S_V2) {
-                intent?.extras?.getParcelable(AUDIO_PLAYER_KEY, Track::class.java)
+            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.TIRAMISU) {
+                intent.getSerializableExtra(AUDIO_PLAYER_KEY, Track::class.java) as Track
             } else {
-                intent?.extras?.getParcelable(AUDIO_PLAYER_KEY)
+                intent.getSerializableExtra(AUDIO_PLAYER_KEY) as Track
             }
 
         val backButton = findViewById<Button>(R.id.back_button)
@@ -80,17 +68,16 @@ class AudioPlayerActivity : AppCompatActivity() {
         val country = findViewById<TextView>(R.id.country)
 
 
-
         backButton.setOnClickListener { finish() }
-        playButton.setOnClickListener { playbackControl() }
+        playButton.setOnClickListener { viewModel.playbackControl() }
 
 
-        trackName.text = track?.trackName
-        artistName.text = track?.artistName
+        trackName.text = track.trackName
+        artistName.text = track.artistName
 
-        if (track?.artworkUrl100?.isNotEmpty() == true) {
+        if (track.artworkUrl100?.isNotEmpty() == true) {
             Glide.with(this)
-                .load(track.artworkUrl512)
+                .load(track.artworkUrl100.replaceAfterLast("/", "512x512bb.jpg"))
                 .placeholder(R.drawable.audioplayer_placeholder)
                 .transform(RoundedCorners(TrackViewHolder.ROUNDED_CORNER_RADIUS))
                 .into(artwork)
@@ -98,7 +85,7 @@ class AudioPlayerActivity : AppCompatActivity() {
             artwork.setImageResource(R.drawable.audioplayer_placeholder)
         }
 
-        if (track?.trackTimeMillis != null) {
+        if (track.trackTimeMillis != null) {
             trackTimeMills.text = SimpleDateFormat(
                 "mm:ss",
                 Locale.getDefault()
@@ -107,7 +94,7 @@ class AudioPlayerActivity : AppCompatActivity() {
             trackTimeMills.text = getString(R.string.default_trackTimeMills)
         }
 
-        if (track?.collectionName != null) {
+        if (track.collectionName != null) {
             collectionNameSubj.isVisible = true
             collectionName.isVisible = true
             collectionName.text = track.collectionName
@@ -116,10 +103,10 @@ class AudioPlayerActivity : AppCompatActivity() {
             collectionName.isVisible = false
         }
 
-        val year = track?.releaseDate?.substring(0..3)
+        val year = track.releaseDate?.substring(0..3)
         releaseDate.text = year
-        primaryGenreName.text = track?.primaryGenreName
-        country.text = track?.country
+        primaryGenreName.text = track.primaryGenreName
+        country.text = track.country
 
         viewModel.playerState.observe(this, Observer { state ->
             when (state) {
@@ -128,20 +115,20 @@ class AudioPlayerActivity : AppCompatActivity() {
                 PlayerState.PREPARED -> {
                     playButton.isEnabled = true
                     playButton.setImageResource(R.drawable.play)
+                    timer.text = formatTime(0)
                 }
 
                 PlayerState.DEFAULT -> {
                     playButton.isEnabled = false
                 }
+
+                is PlayerState.CurrentPosition -> timer.text = state.time
+
+                else -> {}
             }
         })
 
-        viewModel.currentPosition.observe(this, Observer { position ->
-            timer.text = formatTime(position)
-        })
-
-        preparePlayer(track?.previewUrl)
-
+        preparePlayer(track.previewUrl)
     }
 
     override fun onPause() {
@@ -151,7 +138,6 @@ class AudioPlayerActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        handler.removeCallbacks(updateTimer)
         viewModel.releasePlayer()
     }
 
@@ -159,25 +145,15 @@ class AudioPlayerActivity : AppCompatActivity() {
         viewModel.preparePlayer(previewUrl)
     }
 
-
     private fun startPlayer() {
         playButton.setImageResource(R.drawable.pause)
-        handler.post(updateTimer)
+
     }
 
     private fun pausePlayer() {
         playButton.setImageResource(R.drawable.play)
-        handler.removeCallbacks(updateTimer)
-    }
 
-    private fun playbackControl() {
-        when (viewModel.playerState.value) {
-            PlayerState.PLAYING -> viewModel.pausePlayer()
-            PlayerState.PREPARED, PlayerState.PAUSED -> viewModel.startPlayer()
-            else -> Unit
-        }
     }
-
 
     private fun formatTime(milliseconds: Int): String {
         val formatter = SimpleDateFormat("mm:ss", Locale.getDefault())

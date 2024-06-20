@@ -3,6 +3,7 @@ package com.practicum.playlistmaker.search.ui.viewmodel
 import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.practicum.playlistmaker.creator.Creator
 import com.practicum.playlistmaker.search.data.TrackRepositoryImpl
 import com.practicum.playlistmaker.search.data.network.ITunesService
 import com.practicum.playlistmaker.search.data.network.RetrofitClient
@@ -18,12 +19,9 @@ class SearchViewModelFactory(private val application: Application) : ViewModelPr
             val iTunesService: ITunesService =
                 RetrofitClient.getClient(application.getString(com.practicum.playlistmaker.R.string.itunes_url))
                     .create(ITunesService::class.java)
-            val searchHistory = SearchHistory(
-                application.getSharedPreferences(
-                    "SearchHistory",
-                    Application.MODE_PRIVATE
-                )
-            )
+
+            val sharedPreferences = Creator.provideSharedPreferences(application)
+            val searchHistory = SearchHistory(sharedPreferences)
             val repository: TrackRepository = TrackRepositoryImpl(iTunesService, searchHistory)
             val interactor: TrackInteractor = TrackInteractorImpl(repository)
             return SearchViewModel(interactor) as T

@@ -5,6 +5,13 @@ import com.practicum.playlistmaker.player.domain.api.MediaPlayerRepository
 
 class MediaPlayerRepositoryImpl(private val mediaPlayer: MediaPlayer) : MediaPlayerRepository {
 
+    override val playerCurrentPosition: Int
+        get() = mediaPlayer.currentPosition
+
+    override val playerDuration: Int
+        get() = mediaPlayer.duration
+
+
     override fun preparePlayer(
         previewUrl: String?,
         onPrepared: () -> Unit,
@@ -13,7 +20,10 @@ class MediaPlayerRepositoryImpl(private val mediaPlayer: MediaPlayer) : MediaPla
         mediaPlayer.setDataSource(previewUrl)
         mediaPlayer.prepareAsync()
         mediaPlayer.setOnPreparedListener { onPrepared() }
-        mediaPlayer.setOnCompletionListener { onCompletion() }
+        mediaPlayer.setOnCompletionListener {
+            onCompletion()
+            mediaPlayer.seekTo(0)
+        }
     }
 
     override fun startPlayer() {
