@@ -17,7 +17,6 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.NestedScrollView
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.practicum.playlistmaker.R
@@ -25,7 +24,8 @@ import com.practicum.playlistmaker.player.ui.AudioPlayerActivity
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.ui.adapters.TrackAdapter
 import com.practicum.playlistmaker.search.ui.viewmodel.SearchViewModel
-import com.practicum.playlistmaker.search.ui.viewmodel.SearchViewModelFactory
+import org.koin.androidx.viewmodel.ext.android.viewModel
+
 
 class SearchActivity : AppCompatActivity() {
 
@@ -38,7 +38,7 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var historyCleanButton: Button
     private lateinit var youSearch: TextView
     private lateinit var progressBar: ProgressBar
-    private lateinit var viewModel: SearchViewModel
+
     private var inputValue: String = ""
 
     private val handler = Handler(Looper.getMainLooper())
@@ -62,15 +62,11 @@ class SearchActivity : AppCompatActivity() {
         return current
     }
 
+    private val viewModel by viewModel<SearchViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
-
-        val factory = SearchViewModelFactory(application)
-        viewModel = ViewModelProvider(this, factory).get(SearchViewModel::class.java)
-
-
 
         progressBar = findViewById(R.id.progressBar)
         val updateButton = findViewById<Button>(R.id.updateButton)

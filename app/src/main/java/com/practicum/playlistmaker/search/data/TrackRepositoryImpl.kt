@@ -3,6 +3,7 @@ package com.practicum.playlistmaker.search.data
 import com.practicum.playlistmaker.search.data.dto.SearchResponse
 import com.practicum.playlistmaker.search.data.network.ITunesService
 import com.practicum.playlistmaker.search.data.preferences.SearchHistory
+import com.practicum.playlistmaker.search.data.preferences.SearchHistoryStorage
 import com.practicum.playlistmaker.search.domain.api.TrackRepository
 import com.practicum.playlistmaker.search.domain.models.Track
 import retrofit2.Call
@@ -45,7 +46,7 @@ class TrackRepositoryImpl(
         val history = searchHistory.getSearchHistory()
         history.removeIf { it?.trackId == track.trackId }
         history.add(0, track)
-        if (history.size > SearchHistory.MAX_HISTORY_SIZE) {
+        if (history.size > SearchHistoryStorage.MAX_HISTORY_SIZE) {
             history.removeAt(history.size - 1)
         }
         searchHistory.saveSearchHistory(history)
