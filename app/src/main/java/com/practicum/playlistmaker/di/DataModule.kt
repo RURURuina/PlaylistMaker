@@ -15,7 +15,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 private const val baseUrl = "https://itunes.apple.com"
 private const val SEARCH_HISTORY = "search_history"
-const val THEME = "playlistmaker_theme"
+private const val THEME = "playlistmaker_theme"
 
 val dataModule = module {
     single<ITunesService> {
