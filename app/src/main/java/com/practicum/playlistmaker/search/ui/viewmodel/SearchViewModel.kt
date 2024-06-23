@@ -7,6 +7,7 @@ import com.practicum.playlistmaker.search.domain.api.TrackInteractor
 import com.practicum.playlistmaker.search.domain.models.Track
 
 class SearchViewModel(private val interactor: TrackInteractor) : ViewModel() {
+
     private val _tracks = MutableLiveData<MutableList<Track?>>()
     val tracks: LiveData<MutableList<Track?>> get() = _tracks
 

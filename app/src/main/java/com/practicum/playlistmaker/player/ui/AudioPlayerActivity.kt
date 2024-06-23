@@ -1,40 +1,29 @@
 package com.practicum.playlistmaker.player.ui
 
+//import com.practicum.playlistmaker.creator.Creator
 import android.os.Build
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.creator.Creator
 import com.practicum.playlistmaker.player.ui.model.PlayerState
 import com.practicum.playlistmaker.player.ui.view_model.MediaPlayerViewModel
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.search.ui.SearchActivity.Companion.AUDIO_PLAYER_KEY
 import com.practicum.playlistmaker.search.ui.adapters.TrackViewHolder
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 class AudioPlayerActivity : AppCompatActivity() {
 
-    private val viewModel: MediaPlayerViewModel by viewModels {
-        object : ViewModelProvider.Factory {
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                if (modelClass.isAssignableFrom(MediaPlayerViewModel::class.java)) {
-                    return MediaPlayerViewModel(Creator.mediaPlayerCreator()) as T
-                }
-                throw IllegalArgumentException("Unknown ViewModel class")
-            }
-        }
-    }
+    private val viewModel by viewModel<MediaPlayerViewModel>()
 
     private lateinit var playButton: ImageView
     private lateinit var timer: TextView
