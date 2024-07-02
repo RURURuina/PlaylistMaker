@@ -19,7 +19,7 @@
             android:name=".player.ui.AudioPlayerActivity"
             android:exported="false"/>
         <activity
-            android:name=".mediateka.ui.activity.MediatekaActivity"
+            android:name="mediateka.ui.MediatekaActivity"
             android:exported="false" />
         <activity
             android:name=".search.ui.SearchActivity"

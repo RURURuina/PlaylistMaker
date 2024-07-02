@@ -104,7 +104,8 @@
 
             <Button
                 android:id="@+id/history_clean_button"
-                style="@style/clearHistoryButton"
+                style="@style/smallButtonStyle"
+                android:text="@string/clear_search_history"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 

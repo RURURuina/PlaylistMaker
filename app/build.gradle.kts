@@ -26,6 +26,8 @@ android {
             )
         }
     }
+
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -33,9 +35,15 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+
+    viewBinding {
+        enable = true
+    }
+
 }
 
 dependencies {
+    implementation("androidx.viewpager2:viewpager2:1.0.0")
     implementation("io.insert-koin:koin-android:3.3.0")
     implementation ("androidx.activity:activity-ktx:1.2.3")
     implementation ("androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.1")
