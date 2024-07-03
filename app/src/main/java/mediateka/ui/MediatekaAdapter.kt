@@ -1,10 +1,9 @@
 package mediateka.ui
 
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter
 
-class MediatekaAdapter(activity: AppCompatActivity) : FragmentStateAdapter(activity) {
+class MediatekaAdapter(fragment: Fragment) : FragmentStateAdapter(fragment) {
     override fun getItemCount(): Int {
         return 2
     }

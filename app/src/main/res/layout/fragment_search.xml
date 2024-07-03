@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     style=""
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/colorPrimary"
     android:orientation="vertical"
-    android:padding="@dimen/default_padding">
+    android:padding="@dimen/default_padding"
+    tools:context="search.ui.SearchFragment">
 
     <LinearLayout
         android:id="@+id/back_button"
@@ -17,15 +17,12 @@
         android:gravity="center"
         android:orientation="horizontal">
 
-        <ImageView
-            style="@style/BackButton"
-            android:src="@drawable/back_ic" />
 
         <TextView
             style="@style/SettingsMainString"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="25dp"
+
             android:text="@string/search" />
 
     </LinearLayout>
@@ -105,9 +102,9 @@
             <Button
                 android:id="@+id/history_clean_button"
                 style="@style/smallButtonStyle"
-                android:text="@string/clear_search_history"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:text="@string/clear_search_history" />
 
         </LinearLayout>
 
@@ -115,6 +112,7 @@
 
 
     <include
+        android:id="@+id/nothing_found_placeholder"
         layout="@layout/nothing_found_placeholder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -123,6 +121,7 @@
         android:visibility="gone" />
 
     <include
+        android:id="@+id/serverErrorPlaceholder"
         layout="@layout/server_error_placeholder"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
