@@ -51,6 +51,8 @@ class MediatekaFragment : Fragment() {
         return tabView
 
     }
+
+
 }
 
 

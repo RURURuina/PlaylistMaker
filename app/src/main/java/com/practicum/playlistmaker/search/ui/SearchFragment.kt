@@ -111,11 +111,12 @@ class SearchFragment : Fragment() {
             val inputMethodManager = context?.getSystemService(InputMethodManager::class.java)
             inputMethodManager?.hideSoftInputFromWindow(binding.inputEditText.windowToken, 0)
             binding.inputEditText.clearFocus()
-            hideSearchHistory()
             adapter.clearList()
             hidePlaceholder()
             binding.scrollView.smoothScrollTo(0, 0)
-            searchHistoryVisibilityCondition()
+            viewModel.loadSearchHistory()
+
+
         }
 
 
@@ -291,8 +292,8 @@ class SearchFragment : Fragment() {
     }
 
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDestroyView() {
+        super.onDestroyView()
 
         _binding = null
     }

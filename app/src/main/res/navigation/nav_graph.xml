@@ -19,9 +19,5 @@
         android:name="com.practicum.playlistmaker.settings.ui.activity.SettingsFragment"
         android:label="fragment_settings"
         tools:layout="@layout/fragment_settings" />
-    <activity
-        android:id="@+id/mainActivity"
-        android:name="com.practicum.playlistmaker.main.ui.MainActivity"
-        android:label="activity_main"
-        tools:layout="@layout/activity_main" />
+
 </navigation>
