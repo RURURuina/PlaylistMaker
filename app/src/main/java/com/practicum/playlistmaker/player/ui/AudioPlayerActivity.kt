@@ -15,7 +15,7 @@ import com.practicum.playlistmaker.R
 import com.practicum.playlistmaker.player.ui.model.PlayerState
 import com.practicum.playlistmaker.player.ui.view_model.MediaPlayerViewModel
 import com.practicum.playlistmaker.search.domain.models.Track
-import com.practicum.playlistmaker.search.ui.SearchActivity.Companion.AUDIO_PLAYER_KEY
+import com.practicum.playlistmaker.search.ui.SearchFragment.Companion.AUDIO_PLAYER_KEY
 import com.practicum.playlistmaker.search.ui.adapters.TrackViewHolder
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.text.SimpleDateFormat
@@ -58,6 +58,8 @@ class AudioPlayerActivity : AppCompatActivity() {
 
 
         backButton.setOnClickListener { finish() }
+
+
         playButton.setOnClickListener { viewModel.playbackControl() }
 
 

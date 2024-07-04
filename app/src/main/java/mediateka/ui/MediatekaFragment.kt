@@ -1,26 +1,32 @@
 package mediateka.ui
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import com.practicum.playlistmaker.R
-import com.practicum.playlistmaker.databinding.ActivityMediatekaBinding
+import com.practicum.playlistmaker.databinding.FragmentMediatekaBinding
 
-class MediatekaActivity : AppCompatActivity() {
+class MediatekaFragment : Fragment() {
 
-    private lateinit var binding: ActivityMediatekaBinding
-    override fun onCreate(savedInstanceState: Bundle?) {
+    private lateinit var binding: FragmentMediatekaBinding
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         super.onCreate(savedInstanceState)
-        binding = ActivityMediatekaBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        binding = FragmentMediatekaBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-        binding.mediatekaBack.setOnClickListener {
-            finish()
-        }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         val viewPager: ViewPager2 = binding.viewPager
         val tabLayout: TabLayout = binding.tabLayout
@@ -30,6 +36,7 @@ class MediatekaActivity : AppCompatActivity() {
         TabLayoutMediator(tabLayout, viewPager) { tab, position ->
             tab.customView = createTabView(position)
         }.attach()
+
 
     }
 
@@ -45,4 +52,13 @@ class MediatekaActivity : AppCompatActivity() {
 
     }
 
+
 }
+
+
+
+
+
+
+
+

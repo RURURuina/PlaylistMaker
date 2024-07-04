@@ -219,4 +219,9 @@
         <item name="android:textFontWeight">500</item>
     </style>
 
+    <style name="bottomNavStyle">
+        <item name="android:background">@color/night_theme_bg</item>
+        <item name="itemTextColor">@color/bottom_nav_item_color_night</item>
+        <item name="itemIconTint">@color/bottom_nav_item_color_night</item>
+    </style>
 </resources>
