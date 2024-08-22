@@ -34,12 +34,11 @@ class AudioPlayerActivity : AppCompatActivity() {
         setContentView(R.layout.activity_audioplayer)
 
 
-        val track =
-            if (Build.VERSION.SDK_INT > Build.VERSION_CODES.TIRAMISU) {
-                intent.getSerializableExtra(AUDIO_PLAYER_KEY, Track::class.java) as Track
-            } else {
-                intent.getSerializableExtra(AUDIO_PLAYER_KEY) as Track
-            }
+        val track = if (Build.VERSION.SDK_INT > Build.VERSION_CODES.TIRAMISU) {
+            intent.getSerializableExtra(AUDIO_PLAYER_KEY, Track::class.java) as Track
+        } else {
+            intent.getSerializableExtra(AUDIO_PLAYER_KEY) as Track
+        }
 
         val backButton = findViewById<Button>(R.id.back_button)
         val artwork = findViewById<ImageView>(R.id.artworkUrl512)
@@ -67,19 +66,16 @@ class AudioPlayerActivity : AppCompatActivity() {
         artistName.text = track.artistName
 
         if (track.artworkUrl100?.isNotEmpty() == true) {
-            Glide.with(this)
-                .load(track.artworkUrl100.replaceAfterLast("/", "512x512bb.jpg"))
+            Glide.with(this).load(track.artworkUrl100.replaceAfterLast("/", "512x512bb.jpg"))
                 .placeholder(R.drawable.audioplayer_placeholder)
-                .transform(RoundedCorners(TrackViewHolder.ROUNDED_CORNER_RADIUS))
-                .into(artwork)
+                .transform(RoundedCorners(TrackViewHolder.ROUNDED_CORNER_RADIUS)).into(artwork)
         } else {
             artwork.setImageResource(R.drawable.audioplayer_placeholder)
         }
 
         if (track.trackTimeMillis != null) {
             trackTimeMills.text = SimpleDateFormat(
-                "mm:ss",
-                Locale.getDefault()
+                "mm:ss", Locale.getDefault()
             ).format(track.trackTimeMillis)
         } else {
             trackTimeMills.text = getString(R.string.default_trackTimeMills)
@@ -106,7 +102,7 @@ class AudioPlayerActivity : AppCompatActivity() {
                 PlayerState.PREPARED -> {
                     playButton.isEnabled = true
                     playButton.setImageResource(R.drawable.play)
-                    timer.text = formatTime(0)
+                    timer.text = viewModel.startTime()
                 }
 
                 PlayerState.DEFAULT -> {
