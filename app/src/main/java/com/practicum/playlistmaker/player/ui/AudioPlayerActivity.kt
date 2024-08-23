@@ -1,6 +1,6 @@
 package com.practicum.playlistmaker.player.ui
 
-//import com.practicum.playlistmaker.creator.Creator
+
 import android.os.Build
 import android.os.Bundle
 import android.widget.Button
@@ -25,20 +25,25 @@ class AudioPlayerActivity : AppCompatActivity() {
 
     private val viewModel by viewModel<MediaPlayerViewModel>()
 
+
     private lateinit var playButton: ImageView
     private lateinit var timer: TextView
+    private lateinit var track: Track
 
+    companion object {
+        private const val TRACK_ARTWORK_SIZE = "512x512bb.jpg"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_audioplayer)
 
-
-        val track = if (Build.VERSION.SDK_INT > Build.VERSION_CODES.TIRAMISU) {
+        track = if (Build.VERSION.SDK_INT > Build.VERSION_CODES.TIRAMISU) {
             intent.getSerializableExtra(AUDIO_PLAYER_KEY, Track::class.java) as Track
         } else {
             intent.getSerializableExtra(AUDIO_PLAYER_KEY) as Track
         }
+
 
         val backButton = findViewById<Button>(R.id.back_button)
         val artwork = findViewById<ImageView>(R.id.artworkUrl512)
@@ -65,8 +70,9 @@ class AudioPlayerActivity : AppCompatActivity() {
         trackName.text = track.trackName
         artistName.text = track.artistName
 
+
         if (track.artworkUrl100?.isNotEmpty() == true) {
-            Glide.with(this).load(track.artworkUrl100.replaceAfterLast("/", "512x512bb.jpg"))
+            Glide.with(this).load(track.artworkUrl100!!.replaceAfterLast("/", TRACK_ARTWORK_SIZE))
                 .placeholder(R.drawable.audioplayer_placeholder)
                 .transform(RoundedCorners(TrackViewHolder.ROUNDED_CORNER_RADIUS)).into(artwork)
         } else {
@@ -105,10 +111,6 @@ class AudioPlayerActivity : AppCompatActivity() {
                     timer.text = viewModel.startTime()
                 }
 
-                PlayerState.DEFAULT -> {
-                    playButton.isEnabled = false
-                }
-
                 is PlayerState.CurrentPosition -> timer.text = state.time
 
                 else -> {}
@@ -116,6 +118,8 @@ class AudioPlayerActivity : AppCompatActivity() {
         })
 
         preparePlayer(track.previewUrl)
+
+
     }
 
     override fun onPause() {
@@ -128,8 +132,18 @@ class AudioPlayerActivity : AppCompatActivity() {
         viewModel.releasePlayer()
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (viewModel.playerState.value == PlayerState.PREPARED) {
+            viewModel.preparePlayer(track.previewUrl)
+            viewModel.startPlayer()
+        }
+
+    }
+
     private fun preparePlayer(previewUrl: String?) {
         viewModel.preparePlayer(previewUrl)
+
     }
 
     private fun startPlayer() {

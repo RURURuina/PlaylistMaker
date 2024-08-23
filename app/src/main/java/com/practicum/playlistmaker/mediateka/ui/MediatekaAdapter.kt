@@ -1,4 +1,4 @@
-package mediateka.ui
+package com.practicum.playlistmaker.mediateka.ui
 
 import androidx.fragment.app.Fragment
 import androidx.viewpager2.adapter.FragmentStateAdapter

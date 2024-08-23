@@ -3,13 +3,13 @@ package com.practicum.playlistmaker.player.data.impl
 import android.media.MediaPlayer
 import com.practicum.playlistmaker.player.domain.api.MediaPlayerRepository
 
-class MediaPlayerRepositoryImpl(private val mediaPlayer: MediaPlayer) : MediaPlayerRepository {
+class MediaPlayerRepositoryImpl(private var mediaPlayer: MediaPlayer?) : MediaPlayerRepository {
 
     override val playerCurrentPosition: Int
-        get() = mediaPlayer.currentPosition
+        get() = mediaPlayer?.currentPosition ?: 0
 
     override val playerDuration: Int
-        get() = mediaPlayer.duration
+        get() = mediaPlayer?.duration ?: 0
 
 
     override fun preparePlayer(
@@ -17,32 +17,47 @@ class MediaPlayerRepositoryImpl(private val mediaPlayer: MediaPlayer) : MediaPla
         onPrepared: () -> Unit,
         onCompletion: () -> Unit
     ) {
-        mediaPlayer.setDataSource(previewUrl)
-        mediaPlayer.prepareAsync()
-        mediaPlayer.setOnPreparedListener { onPrepared() }
-        mediaPlayer.setOnCompletionListener {
-            onCompletion()
-            mediaPlayer.seekTo(0)
+
+        if (previewUrl != null) {
+
+            mediaPlayer = MediaPlayer().apply {
+
+                setDataSource(previewUrl)
+                prepareAsync()
+                setOnPreparedListener { onPrepared.invoke() }
+                setOnCompletionListener {
+                    onCompletion.invoke()
+                        // seekTo(0)
+                }
+
+            }
         }
+
+
+
+
     }
 
     override fun startPlayer() {
-        mediaPlayer.start()
+        mediaPlayer?.start()
     }
 
     override fun pausePlayer() {
-        mediaPlayer.pause()
+        mediaPlayer?.pause()
     }
 
+
+
     override fun releasePlayer() {
-        mediaPlayer.release()
+        mediaPlayer?.release()
+
     }
 
     override fun isPlaying(): Boolean {
-        return mediaPlayer.isPlaying
+        return mediaPlayer?.isPlaying ?: false
     }
 
     override fun getCurrentPosition(): Int {
-        return mediaPlayer.currentPosition
+        return mediaPlayer?.currentPosition ?: 0
     }
 }

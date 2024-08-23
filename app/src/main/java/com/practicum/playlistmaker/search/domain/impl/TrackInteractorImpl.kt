@@ -11,7 +11,7 @@ class TrackInteractorImpl(private val repository: TrackRepository) : TrackIntera
         repository.searchTracks(term)
 
 
-    override fun getSearchHistory(): MutableList<Track?> {
+    override fun getSearchHistory(): List<Track?> {
         return repository.getSearchHistory()
     }
 

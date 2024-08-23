@@ -8,6 +8,8 @@ interface MediaPlayerInteractor {
     fun startPlayer()
     fun pausePlayer()
     fun releasePlayer()
+
+
     fun isPlaying(): Boolean
     fun getCurrentPosition(): Int
 }

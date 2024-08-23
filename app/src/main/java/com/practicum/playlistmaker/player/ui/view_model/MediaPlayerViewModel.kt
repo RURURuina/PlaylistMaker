@@ -13,10 +13,7 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 class MediaPlayerViewModel(private val interactor: MediaPlayerInteractor) : ViewModel() {
-    private companion object {
-        const val TRACK_FINISH = 29_900L
-        const val UPDATE_INTERVAL = 300L
-    }
+
 
     private val _playerState = MutableLiveData<PlayerState>().apply { value = PlayerState.DEFAULT }
     val playerState: LiveData<PlayerState> = _playerState
@@ -24,7 +21,12 @@ class MediaPlayerViewModel(private val interactor: MediaPlayerInteractor) : View
 
     private var timerUpdateJob: Job? = null
 
+    private companion object {
+        const val UPDATE_INTERVAL = 300L
+    }
+
     private fun startTimer() {
+
 
         timerUpdateJob = viewModelScope.launch {
             while (interactor.isPlaying()) {
@@ -56,10 +58,14 @@ class MediaPlayerViewModel(private val interactor: MediaPlayerInteractor) : View
         })
     }
 
-    private fun startPlayer() {
-        interactor.startPlayer()
-        _playerState.value = PlayerState.PLAYING
-        startTimer()
+
+    fun startPlayer() {
+        if (_playerState.value == PlayerState.PREPARED || _playerState.value == PlayerState.PAUSED) {
+            interactor.startPlayer()
+            _playerState.value = PlayerState.PLAYING
+            startTimer()
+
+        }
     }
 
     fun pausePlayer() {
@@ -78,6 +84,7 @@ class MediaPlayerViewModel(private val interactor: MediaPlayerInteractor) : View
     fun isPlaying(): Boolean {
         return interactor.isPlaying()
     }
+
 
     fun playbackControl() {
         if (isPlaying()) {

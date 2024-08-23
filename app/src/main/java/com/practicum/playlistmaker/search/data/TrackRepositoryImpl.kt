@@ -30,7 +30,7 @@ class TrackRepositoryImpl(
         }
     }.flowOn(Dispatchers.IO)
 
-    override fun getSearchHistory(): MutableList<Track?> {
+    override fun getSearchHistory(): List<Track?> {
         return searchHistory.getSearchHistory()
     }
 

@@ -1,4 +1,4 @@
-package mediateka.ui
+package com.practicum.playlistmaker.mediateka.ui
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.practicum.playlistmaker.databinding.FragmentPlaylistsBinding
-import mediateka.ui.viewmodel.PlaylistsViewModel
+import com.practicum.playlistmaker.mediateka.ui.viewmodel.PlaylistsViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FragmentPlaylists : Fragment() {

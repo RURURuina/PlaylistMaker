@@ -27,7 +27,7 @@ class SearchFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var adapter: TrackAdapter
-    private lateinit var searchHistory: MutableList<Track?>
+    private lateinit var searchHistory: List<Track?>
     private var inputValue: String = ""
 
     companion object {
@@ -95,7 +95,7 @@ class SearchFragment : Fragment() {
         viewModel.searchHistory.observe(viewLifecycleOwner) { history ->
             searchHistory = history
             if (history.isNotEmpty()) {
-                adapter.updateList(history)
+                adapter.updateList(history.toMutableList())
                 showSearchHistory()
             } else {
                 hideSearchHistory()
@@ -122,9 +122,6 @@ class SearchFragment : Fragment() {
             binding.scrollView.smoothScrollTo(0, 0)
             viewModel.loadSearchHistory()
         }
-
-
-
 
         binding.serverErrorPlaceholder.updateButton.setOnClickListener {
             onUpdateButtonClick()
@@ -176,7 +173,6 @@ class SearchFragment : Fragment() {
             private fun clearButtonVisibility(s: CharSequence?): Int =
                 if (s.isNullOrEmpty()) View.GONE else View.VISIBLE
 
-
         }
 
         binding.inputEditText.addTextChangedListener(textWatcher)
@@ -208,8 +204,6 @@ class SearchFragment : Fragment() {
         }
 
         viewModel.loadSearchHistory()
-
-
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -225,7 +219,6 @@ class SearchFragment : Fragment() {
             binding.inputEditText.setText("")
         }
         binding.inputEditText.setText(inputValue)
-
     }
 
 
@@ -235,7 +228,6 @@ class SearchFragment : Fragment() {
             hidePlaceholder()
             viewModel.searchTracks(query)
         }
-
     }
 
     private fun onUpdateButtonClick() {
@@ -281,7 +273,6 @@ class SearchFragment : Fragment() {
         binding.nothingFoundPlaceholder.root.visibility = View.GONE
         binding.serverErrorPlaceholder.root.visibility = View.GONE
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()
