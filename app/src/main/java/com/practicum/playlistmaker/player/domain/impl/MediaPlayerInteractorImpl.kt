@@ -7,9 +7,7 @@ class MediaPlayerInteractorImpl(private val repository: MediaPlayerRepository) :
     MediaPlayerInteractor {
 
     override fun preparePlayer(
-        previewUrl: String?,
-        onPrepared: () -> Unit,
-        onCompletion: () -> Unit
+        previewUrl: String?, onPrepared: () -> Unit, onCompletion: () -> Unit
     ) {
         repository.preparePlayer(previewUrl, onPrepared, onCompletion)
     }
@@ -31,7 +29,6 @@ class MediaPlayerInteractorImpl(private val repository: MediaPlayerRepository) :
     override fun releasePlayer() {
         repository.releasePlayer()
     }
-
 
 
     override fun isPlaying(): Boolean {

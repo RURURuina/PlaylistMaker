@@ -1,5 +1,6 @@
 package com.practicum.playlistmaker.search.ui
 
+import TrackAdapter
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
@@ -15,7 +16,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.practicum.playlistmaker.databinding.FragmentSearchBinding
 import com.practicum.playlistmaker.player.ui.AudioPlayerActivity
 import com.practicum.playlistmaker.search.domain.models.Track
-import com.practicum.playlistmaker.search.ui.adapters.TrackAdapter
 import com.practicum.playlistmaker.search.ui.viewmodel.SearchViewModel
 import com.practicum.playlistmaker.utils.debounce
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -27,7 +27,7 @@ class SearchFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var adapter: TrackAdapter
-    private lateinit var searchHistory: List<Track?>
+    private lateinit var searchHistory: MutableList<Track?>
     private var inputValue: String = ""
 
     companion object {
@@ -95,7 +95,7 @@ class SearchFragment : Fragment() {
         viewModel.searchHistory.observe(viewLifecycleOwner) { history ->
             searchHistory = history
             if (history.isNotEmpty()) {
-                adapter.updateList(history.toMutableList())
+                adapter.updateList(history)
                 showSearchHistory()
             } else {
                 hideSearchHistory()

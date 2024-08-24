@@ -11,31 +11,19 @@ class MediaPlayerRepositoryImpl(private var mediaPlayer: MediaPlayer?) : MediaPl
     override val playerDuration: Int
         get() = mediaPlayer?.duration ?: 0
 
-
     override fun preparePlayer(
-        previewUrl: String?,
-        onPrepared: () -> Unit,
-        onCompletion: () -> Unit
+        previewUrl: String?, onPrepared: () -> Unit, onCompletion: () -> Unit
     ) {
-
         if (previewUrl != null) {
-
             mediaPlayer = MediaPlayer().apply {
-
                 setDataSource(previewUrl)
                 prepareAsync()
-                setOnPreparedListener { onPrepared.invoke() }
+                setOnPreparedListener { onPrepared() }
                 setOnCompletionListener {
-                    onCompletion.invoke()
-                        // seekTo(0)
+                    onCompletion()
                 }
-
             }
         }
-
-
-
-
     }
 
     override fun startPlayer() {
@@ -45,7 +33,6 @@ class MediaPlayerRepositoryImpl(private var mediaPlayer: MediaPlayer?) : MediaPl
     override fun pausePlayer() {
         mediaPlayer?.pause()
     }
-
 
 
     override fun releasePlayer() {

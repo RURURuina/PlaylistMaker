@@ -35,7 +35,7 @@ class MediaPlayerViewModel(private val interactor: MediaPlayerInteractor) : View
                     PlayerState.CurrentPosition(
                         SimpleDateFormat(
                             "mm:ss", Locale.getDefault()
-                        ).format(interactor.playerCurrentPosition)
+                        ).format(interactor.playerCurrentPosition) ?: "00:00"
                     )
                 )
             }
@@ -43,11 +43,7 @@ class MediaPlayerViewModel(private val interactor: MediaPlayerInteractor) : View
     }
 
     fun startTime(): String {
-        return String.format("%01d:%02d", 0, 30)
-    }
-
-    fun renderState(stateUi: PlayerState) {
-        _playerState.postValue(stateUi)
+        return String.format("%02d:%02d", 0, 0)
     }
 
     fun preparePlayer(previewUrl: String?) {
@@ -55,6 +51,9 @@ class MediaPlayerViewModel(private val interactor: MediaPlayerInteractor) : View
             _playerState.value = PlayerState.PREPARED
         }, {
             _playerState.value = PlayerState.PREPARED
+            timerUpdateJob?.cancel()
+
+
         })
     }
 

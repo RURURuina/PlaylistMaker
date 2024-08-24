@@ -5,7 +5,5 @@ sealed interface PlayerState {
     object PREPARED : PlayerState
     object PLAYING : PlayerState
     object PAUSED : PlayerState
-
-
     data class CurrentPosition(val time: String) : PlayerState
 }

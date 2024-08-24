@@ -44,7 +44,6 @@ class AudioPlayerActivity : AppCompatActivity() {
             intent.getSerializableExtra(AUDIO_PLAYER_KEY) as Track
         }
 
-
         val backButton = findViewById<Button>(R.id.back_button)
         val artwork = findViewById<ImageView>(R.id.artworkUrl512)
         val trackName = findViewById<TextView>(R.id.trackName)
@@ -111,6 +110,7 @@ class AudioPlayerActivity : AppCompatActivity() {
                     timer.text = viewModel.startTime()
                 }
 
+
                 is PlayerState.CurrentPosition -> timer.text = state.time
 
                 else -> {}
@@ -118,8 +118,6 @@ class AudioPlayerActivity : AppCompatActivity() {
         })
 
         preparePlayer(track.previewUrl)
-
-
     }
 
     override fun onPause() {
@@ -136,7 +134,8 @@ class AudioPlayerActivity : AppCompatActivity() {
         super.onResume()
         if (viewModel.playerState.value == PlayerState.PREPARED) {
             viewModel.preparePlayer(track.previewUrl)
-            viewModel.startPlayer()
+            viewModel.startTime()
+
         }
 
     }
