@@ -3,12 +3,13 @@ package com.practicum.playlistmaker.search.domain.impl
 import com.practicum.playlistmaker.search.domain.api.TrackInteractor
 import com.practicum.playlistmaker.search.domain.api.TrackRepository
 import com.practicum.playlistmaker.search.domain.models.Track
+import kotlinx.coroutines.flow.Flow
 
 class TrackInteractorImpl(private val repository: TrackRepository) : TrackInteractor {
 
-    override fun searchTracks(term: String, callback: (Result<MutableList<Track?>>) -> Unit) {
-        repository.searchTracks(term, callback)
-    }
+    override suspend fun searchTracks(term: String): Flow<Result<List<Track>>> =
+        repository.searchTracks(term)
+
 
     override fun getSearchHistory(): MutableList<Track?> {
         return repository.getSearchHistory()

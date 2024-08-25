@@ -30,11 +30,9 @@ class TrackViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
 
         if (track.artworkUrl100?.isNotEmpty() == true) {
-            Glide.with(itemView.context)
-                .load(track.artworkUrl100)
+            Glide.with(itemView.context).load(track.artworkUrl100)
                 .placeholder(R.drawable.placeholder)
-                .transform(RoundedCorners(ROUNDED_CORNER_RADIUS))
-                .into(artworkUrl100)
+                .transform(RoundedCorners(ROUNDED_CORNER_RADIUS)).into(artworkUrl100)
         } else {
             artworkUrl100.setImageResource(R.drawable.placeholder)
         }

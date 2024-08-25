@@ -6,8 +6,7 @@ import com.google.gson.reflect.TypeToken
 import com.practicum.playlistmaker.search.domain.models.Track
 
 class SearchHistoryStorage(
-    private val sharedPreferences: SharedPreferences,
-    private val historyGson: Gson
+    private val sharedPreferences: SharedPreferences, private val historyGson: Gson
 ) : SearchHistory {
 
     companion object {

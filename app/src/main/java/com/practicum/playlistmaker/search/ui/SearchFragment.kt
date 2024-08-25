@@ -1,9 +1,8 @@
 package com.practicum.playlistmaker.search.ui
 
+import TrackAdapter
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -12,12 +11,13 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.practicum.playlistmaker.databinding.FragmentSearchBinding
 import com.practicum.playlistmaker.player.ui.AudioPlayerActivity
 import com.practicum.playlistmaker.search.domain.models.Track
-import com.practicum.playlistmaker.search.ui.adapters.TrackAdapter
 import com.practicum.playlistmaker.search.ui.viewmodel.SearchViewModel
+import com.practicum.playlistmaker.utils.debounce
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
@@ -29,30 +29,20 @@ class SearchFragment : Fragment() {
     private lateinit var adapter: TrackAdapter
     private lateinit var searchHistory: MutableList<Track?>
     private var inputValue: String = ""
-    private val handler = Handler(Looper.getMainLooper())
 
     companion object {
         private const val INPUT_VALUE_KEY = "input_value"
         const val AUDIO_PLAYER_KEY = "track"
-        private const val CLICK_DEBOUNCE_DELAY = 1000L
+        private const val CLICK_DEBOUNCE_DELAY = 300L
         private const val SEARCH_DEBOUNCE_DELAY = 2000L
     }
 
     private var isClickAllowed = true
 
-
-    private fun clickDebounce(): Boolean {
-        val current = isClickAllowed
-        if (isClickAllowed) {
-            isClickAllowed = false
-            handler.postDelayed({ isClickAllowed = true }, CLICK_DEBOUNCE_DELAY)
-        }
-        return current
-    }
-
-
     private val viewModel by viewModel<SearchViewModel>()
 
+    private lateinit var clickDebounce: (Unit) -> Unit
+    private lateinit var searchDebounce: (String) -> Unit
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -66,6 +56,22 @@ class SearchFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        clickDebounce = debounce(
+            delayMillis = CLICK_DEBOUNCE_DELAY,
+            coroutineScope = viewLifecycleOwner.lifecycleScope,
+            useLastParam = true
+        ) {
+            isClickAllowed = true
+        }
+
+        searchDebounce = debounce(
+            delayMillis = SEARCH_DEBOUNCE_DELAY,
+            coroutineScope = viewLifecycleOwner.lifecycleScope,
+            useLastParam = true
+        ) { query ->
+            performSearch(query)
+        }
+
 
         binding.recyclerView.layoutManager = LinearLayoutManager(context)
 
@@ -75,16 +81,16 @@ class SearchFragment : Fragment() {
             override fun onItemClick(track: Track) {
                 viewModel.addTrackToHistory(track)
 
-                if (clickDebounce()) {
+                if (isClickAllowed) {
+                    isClickAllowed = false
+                    clickDebounce(Unit)
+
                     val intent = Intent(context, AudioPlayerActivity::class.java)
                     intent.putExtra(AUDIO_PLAYER_KEY, track)
                     startActivity(intent)
                 }
             }
         })
-
-
-
 
         viewModel.searchHistory.observe(viewLifecycleOwner) { history ->
             searchHistory = history
@@ -115,12 +121,7 @@ class SearchFragment : Fragment() {
             hidePlaceholder()
             binding.scrollView.smoothScrollTo(0, 0)
             viewModel.loadSearchHistory()
-
-
         }
-
-
-
 
         binding.serverErrorPlaceholder.updateButton.setOnClickListener {
             onUpdateButtonClick()
@@ -172,7 +173,6 @@ class SearchFragment : Fragment() {
             private fun clearButtonVisibility(s: CharSequence?): Int =
                 if (s.isNullOrEmpty()) View.GONE else View.VISIBLE
 
-
         }
 
         binding.inputEditText.addTextChangedListener(textWatcher)
@@ -180,7 +180,7 @@ class SearchFragment : Fragment() {
         viewModel.tracks.observe(viewLifecycleOwner) { tracks ->
             binding.progressBar.visibility = View.GONE
             if (tracks.isNotEmpty()) {
-                adapter.updateList(tracks)
+                adapter.updateList(tracks.toMutableList())
                 binding.recyclerView.scrollToPosition(0)
             } else {
                 adapter.clearList()
@@ -204,8 +204,6 @@ class SearchFragment : Fragment() {
         }
 
         viewModel.loadSearchHistory()
-
-
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -221,7 +219,6 @@ class SearchFragment : Fragment() {
             binding.inputEditText.setText("")
         }
         binding.inputEditText.setText(inputValue)
-
     }
 
 
@@ -231,21 +228,7 @@ class SearchFragment : Fragment() {
             hidePlaceholder()
             viewModel.searchTracks(query)
         }
-
     }
-
-    private var currentQuery: String? = null
-    private val searchRunnable = Runnable {
-        currentQuery?.let { performSearch(it) }
-    }
-
-
-    private fun searchDebounce(query: String) {
-        currentQuery = query
-        handler.removeCallbacks(searchRunnable)
-        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
-    }
-
 
     private fun onUpdateButtonClick() {
         hidePlaceholder()
@@ -290,7 +273,6 @@ class SearchFragment : Fragment() {
         binding.nothingFoundPlaceholder.root.visibility = View.GONE
         binding.serverErrorPlaceholder.root.visibility = View.GONE
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()
