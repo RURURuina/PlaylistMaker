@@ -4,19 +4,27 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.practicum.playlistmaker.mediateka.domain.db.FavoriteTrackInteractor
 import com.practicum.playlistmaker.player.domain.api.MediaPlayerInteractor
 import com.practicum.playlistmaker.player.ui.model.PlayerState
+import com.practicum.playlistmaker.search.domain.models.Track
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class MediaPlayerViewModel(private val interactor: MediaPlayerInteractor) : ViewModel() {
+class MediaPlayerViewModel(
+    private val interactor: MediaPlayerInteractor,
+    private val favoriteTrackInteractor: FavoriteTrackInteractor) : ViewModel() {
 
 
     private val _playerState = MutableLiveData<PlayerState>().apply { value = PlayerState.DEFAULT }
     val playerState: LiveData<PlayerState> = _playerState
+
+    private val favoriteLiveData = MutableLiveData<Boolean>()
+    fun observeFavoritesState(): LiveData<Boolean> = favoriteLiveData
 
 
     private var timerUpdateJob: Job? = null
@@ -46,7 +54,13 @@ class MediaPlayerViewModel(private val interactor: MediaPlayerInteractor) : View
         return String.format("%02d:%02d", 0, 0)
     }
 
-    fun preparePlayer(previewUrl: String?) {
+    fun preparePlayer(previewUrl: String?, track: Track) {
+        viewModelScope.launch(Dispatchers.IO) {
+
+            val isFavorite = favoriteTrackInteractor.isTrackFavorite(track.trackId)
+            favoriteLiveData.postValue(isFavorite)
+        }
+
         interactor.preparePlayer(previewUrl, {
             _playerState.value = PlayerState.PREPARED
         }, {
@@ -56,7 +70,6 @@ class MediaPlayerViewModel(private val interactor: MediaPlayerInteractor) : View
 
         })
     }
-
 
     fun startPlayer() {
         if (_playerState.value == PlayerState.PREPARED || _playerState.value == PlayerState.PAUSED) {
@@ -79,17 +92,26 @@ class MediaPlayerViewModel(private val interactor: MediaPlayerInteractor) : View
 
     }
 
-
     fun isPlaying(): Boolean {
         return interactor.isPlaying()
     }
-
 
     fun playbackControl() {
         if (isPlaying()) {
             pausePlayer()
         } else {
             startPlayer()
+        }
+    }
+    fun onFavoriteClicked(track: Track) {
+        viewModelScope.launch(Dispatchers.IO) {
+            if (favoriteTrackInteractor.isTrackFavorite(track.trackId)) {
+                favoriteTrackInteractor.removeTrackFromFavorites(track)
+                favoriteLiveData.postValue(false)
+            } else {
+                favoriteTrackInteractor.addTrackToFavorites(track)
+                favoriteLiveData.postValue(true)
+            }
         }
     }
 }

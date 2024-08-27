@@ -13,11 +13,22 @@
         android:id="@+id/mediatekaFragment"
         android:name="com.practicum.playlistmaker.mediateka.ui.MediatekaFragment"
         android:label="fragment_mediateka"
-        tools:layout="@layout/fragment_mediateka" />
+        tools:layout="@layout/fragment_mediateka" >
+        <action
+            android:id="@+id/action_mediatekaFragment_to_audioPlayerActivity"
+            app:destination="@id/audioPlayerActivity" />
+        <action
+            android:id="@+id/action_mediatekaFragment_to_audioPlayerActivity2"
+            app:destination="@id/audioPlayerActivity" />
+    </fragment>
     <fragment
         android:id="@+id/settingsFragment"
         android:name="com.practicum.playlistmaker.settings.ui.activity.SettingsFragment"
         android:label="fragment_settings"
         tools:layout="@layout/fragment_settings" />
+    <activity
+        android:id="@+id/audioPlayerActivity"
+        android:name="com.practicum.playlistmaker.player.ui.AudioPlayerActivity"
+        android:label="AudioPlayerActivity" />
 
 </navigation>

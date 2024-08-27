@@ -15,14 +15,16 @@ val viewModelModule = module {
     }
 
     viewModel<MediaPlayerViewModel>() {
-        MediaPlayerViewModel(interactor = get())
+        MediaPlayerViewModel(interactor = get(), favoriteTrackInteractor = get())
     }
 
     viewModel<SettingsViewModel> {
         SettingsViewModel(settingsInteractor = get(), sharingInteractor = get())
     }
 
-    viewModel<FavoritesViewModel>()
+    viewModel<FavoritesViewModel>() {
+        FavoritesViewModel(favoriteTrackInteractor = get())
+    }
 
     viewModel<PlaylistsViewModel>()
 }

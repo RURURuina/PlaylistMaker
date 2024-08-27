@@ -1,4 +1,5 @@
 import android.annotation.SuppressLint
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -9,10 +10,11 @@ import com.practicum.playlistmaker.search.ui.adapters.TrackViewHolder
 class TrackAdapter(private val listener: OnItemClickListener) :
     RecyclerView.Adapter<TrackViewHolder>() {
 
-    private var trackList: MutableList<Track?> = mutableListOf()
+    var trackList: MutableList<Track?> = mutableListOf()
 
     @SuppressLint("NotifyDataSetChanged")
     fun updateList(trackList: MutableList<Track?>) {
+        Log.d("TrackAdapter", "Updating list with ${trackList.size} items")
         this.trackList = trackList
         notifyDataSetChanged()
     }

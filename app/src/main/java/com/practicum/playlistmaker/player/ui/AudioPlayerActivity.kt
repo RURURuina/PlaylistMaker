@@ -29,7 +29,7 @@ class AudioPlayerActivity : AppCompatActivity() {
     private lateinit var playButton: ImageView
     private lateinit var timer: TextView
     private lateinit var track: Track
-
+    private lateinit var favoriteButton: ImageView
     companion object {
         private const val TRACK_ARTWORK_SIZE = "512x512bb.jpg"
     }
@@ -50,7 +50,7 @@ class AudioPlayerActivity : AppCompatActivity() {
         val artistName = findViewById<TextView>(R.id.artistName)
         playButton = findViewById(R.id.play_ic)
         val addToPlaylist = findViewById<ImageView>(R.id.add_to_playlist)
-        val favoriteButton = findViewById<ImageView>(R.id.favorite)
+        favoriteButton = findViewById<ImageView>(R.id.favorite)
         val trackTimeMills = findViewById<TextView>(R.id.trackTimeMills)
         timer = findViewById<TextView>(R.id.timer)
         val collectionNameSubj = findViewById<TextView>(R.id.collectionName_subj)
@@ -64,7 +64,7 @@ class AudioPlayerActivity : AppCompatActivity() {
 
 
         playButton.setOnClickListener { viewModel.playbackControl() }
-
+        favoriteButton.setOnClickListener { viewModel.onFavoriteClicked(track) }
 
         trackName.text = track.trackName
         artistName.text = track.artistName
@@ -118,6 +118,11 @@ class AudioPlayerActivity : AppCompatActivity() {
         })
 
         preparePlayer(track.previewUrl)
+
+        viewModel.observeFavoritesState().observe(this) {
+            renderLikeButton(it)
+
+        }
     }
 
     override fun onPause() {
@@ -133,7 +138,7 @@ class AudioPlayerActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         if (viewModel.playerState.value == PlayerState.PREPARED) {
-            viewModel.preparePlayer(track.previewUrl)
+            viewModel.preparePlayer(track.previewUrl, track)
             viewModel.startTime()
 
         }
@@ -141,7 +146,7 @@ class AudioPlayerActivity : AppCompatActivity() {
     }
 
     private fun preparePlayer(previewUrl: String?) {
-        viewModel.preparePlayer(previewUrl)
+        viewModel.preparePlayer(previewUrl, track)
 
     }
 
@@ -153,6 +158,16 @@ class AudioPlayerActivity : AppCompatActivity() {
     private fun pausePlayer() {
         playButton.setImageResource(R.drawable.play)
 
+    }
+
+    private fun renderLikeButton(isFavorite: Boolean) {
+        val imageResource =
+            if (isFavorite) {
+                R.drawable.favorite
+            } else {
+                R.drawable.unfavorite
+            }
+        favoriteButton.setImageResource(imageResource)
     }
 
     private fun formatTime(milliseconds: Int): String {
