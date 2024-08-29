@@ -3,7 +3,9 @@ package com.practicum.playlistmaker.di
 import android.content.Context
 import android.content.SharedPreferences
 import android.media.MediaPlayer
+import androidx.room.Room
 import com.google.gson.Gson
+import com.practicum.playlistmaker.mediateka.data.db.AppDatabase
 import com.practicum.playlistmaker.search.data.network.ITunesService
 import com.practicum.playlistmaker.search.data.preferences.SearchHistory
 import com.practicum.playlistmaker.search.data.preferences.SearchHistoryStorage
@@ -44,5 +46,10 @@ val dataModule = module {
 
     single(named("Theme_prefs")) {
         androidContext().getSharedPreferences(THEME, Context.MODE_PRIVATE)
+    }
+
+    single {
+        Room.databaseBuilder(androidContext(), AppDatabase::class.java, "database.db")
+            .build()
     }
 }

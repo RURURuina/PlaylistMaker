@@ -10,7 +10,6 @@ class TrackInteractorImpl(private val repository: TrackRepository) : TrackIntera
     override suspend fun searchTracks(term: String): Flow<Result<List<Track>>> =
         repository.searchTracks(term)
 
-
     override fun getSearchHistory(): MutableList<Track?> {
         return repository.getSearchHistory()
     }

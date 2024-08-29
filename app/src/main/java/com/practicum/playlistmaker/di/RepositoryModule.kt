@@ -1,5 +1,8 @@
 package com.practicum.playlistmaker.di
 
+import com.practicum.playlistmaker.mediateka.data.FavoriteTrackRepositoryImpl
+import com.practicum.playlistmaker.mediateka.data.converters.TrackDbConvertor
+import com.practicum.playlistmaker.mediateka.domain.db.FavoriteTrackRepository
 import com.practicum.playlistmaker.player.data.impl.MediaPlayerRepositoryImpl
 import com.practicum.playlistmaker.player.domain.api.MediaPlayerRepository
 import com.practicum.playlistmaker.search.data.TrackRepositoryImpl
@@ -13,7 +16,8 @@ import org.koin.dsl.module
 val repositoryModule = module {
 
     single<TrackRepository> {
-        TrackRepositoryImpl(iTunesService = get(), searchHistory = get())
+        TrackRepositoryImpl(iTunesService = get(), searchHistory = get(),
+            appDatabase = get())
     }
 
     factory<MediaPlayerRepository> {
@@ -27,4 +31,11 @@ val repositoryModule = module {
     single<ExternalNavigator> {
         ExternalNavigatorImpl(context = get())
     }
+
+    factory { TrackDbConvertor }
+
+    single<FavoriteTrackRepository>{
+        FavoriteTrackRepositoryImpl(appDatabase = get())
+    }
 }
+
