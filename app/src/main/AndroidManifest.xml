@@ -15,12 +15,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MyApp"
         tools:targetApi="31">
-        <activity
-            android:name=".player.ui.AudioPlayerActivity"
-            android:exported="false"/>
+
 
         <activity
-            android:name=".main.ui.MainActivity"
+            android:name="com.practicum.playlistmaker.main.ui.MainActivity"
             android:windowSoftInputMode="adjustNothing"
             android:exported="true">
             <intent-filter>

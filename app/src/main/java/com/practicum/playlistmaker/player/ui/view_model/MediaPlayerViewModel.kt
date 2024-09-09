@@ -5,8 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.practicum.playlistmaker.mediateka.domain.db.FavoriteTrackInteractor
+import com.practicum.playlistmaker.mediateka.domain.db.PlaylistInteractor
+import com.practicum.playlistmaker.mediateka.domain.model.Playlist
 import com.practicum.playlistmaker.player.domain.api.MediaPlayerInteractor
 import com.practicum.playlistmaker.player.ui.model.PlayerState
+import com.practicum.playlistmaker.player.ui.model.TrackInPlaylistState
 import com.practicum.playlistmaker.search.domain.models.Track
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -17,7 +20,8 @@ import java.util.Locale
 
 class MediaPlayerViewModel(
     private val interactor: MediaPlayerInteractor,
-    private val favoriteTrackInteractor: FavoriteTrackInteractor) : ViewModel() {
+    private val favoriteTrackInteractor: FavoriteTrackInteractor,
+    private val playlistInteractor: PlaylistInteractor) : ViewModel() {
 
 
     private val _playerState = MutableLiveData<PlayerState>().apply { value = PlayerState.DEFAULT }
@@ -25,6 +29,12 @@ class MediaPlayerViewModel(
 
     private val favoriteLiveData = MutableLiveData<Boolean>()
     fun observeFavoritesState(): LiveData<Boolean> = favoriteLiveData
+
+    private val playlistLiveData = MutableLiveData<List<Playlist>>()
+    fun observePlaylist(): LiveData<List<Playlist>> = playlistLiveData
+
+    private val trackInPlaylistLiveData = MutableLiveData<TrackInPlaylistState>()
+    fun observeTrackInPlaylistState(): LiveData<TrackInPlaylistState> = trackInPlaylistLiveData
 
 
     private var timerUpdateJob: Job? = null
@@ -112,6 +122,23 @@ class MediaPlayerViewModel(
                 favoriteTrackInteractor.addTrackToFavorites(track)
                 favoriteLiveData.postValue(true)
             }
+        }
+    }
+    fun getSavedPlaylists() {
+        viewModelScope.launch(Dispatchers.IO) {
+            playlistInteractor.getSavedPlaylists().collect() {playlists ->
+                playlistLiveData.postValue(playlists)
+            }
+        }
+    }
+    fun addTracksIdInPlaylist(playlist: Playlist, tracksId: List<Long>, track: Track) {
+        if (track.trackId in tracksId) {
+            trackInPlaylistLiveData.postValue(TrackInPlaylistState.TrackIsAlreadyInPlaylist(playlist.playlistName))
+        } else {
+            viewModelScope.launch(Dispatchers.IO) {
+                playlistInteractor.addTrackIdInPlaylist(playlist, tracksId, track)
+            }
+            trackInPlaylistLiveData.postValue(TrackInPlaylistState.TrackAddToPlaylist(playlist.playlistName))
         }
     }
 }

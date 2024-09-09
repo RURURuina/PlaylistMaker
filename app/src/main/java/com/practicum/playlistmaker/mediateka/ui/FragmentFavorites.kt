@@ -1,7 +1,6 @@
 package com.practicum.playlistmaker.mediateka.ui
 
 import TrackAdapter
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,12 +10,12 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.practicum.playlistmaker.databinding.FragmentFavoritesBinding
 import com.practicum.playlistmaker.mediateka.ui.viewmodel.FavoritesViewModel
 import com.practicum.playlistmaker.mediateka.ui.viewmodel.models.FavoriteTracksState
-import com.practicum.playlistmaker.player.ui.AudioPlayerActivity
 import com.practicum.playlistmaker.search.domain.models.Track
 import com.practicum.playlistmaker.utils.debounce
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -130,9 +129,7 @@ class FragmentFavorites : Fragment() {
     }
 
     private fun openAudioPlayer(track: Track) {
-        val intent = Intent(context, AudioPlayerActivity::class.java).apply {
-            putExtra(AUDIO_PLAYER_KEY, track)
-        }
-        startActivity(intent)
+        val action = MediatekaFragmentDirections.actionMediatekaFragmentToAudioPlayerFragment(track)
+        findNavController().navigate(action)
     }
 }
