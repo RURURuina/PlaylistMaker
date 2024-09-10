@@ -1,7 +1,11 @@
 package com.practicum.playlistmaker.di
 
+import com.practicum.playlistmaker.mediateka.domain.LocalStorageInteractor
 import com.practicum.playlistmaker.mediateka.domain.db.FavoriteTrackInteractor
+import com.practicum.playlistmaker.mediateka.domain.db.PlaylistInteractor
 import com.practicum.playlistmaker.mediateka.domain.impl.FavoriteTrackInteractorImpl
+import com.practicum.playlistmaker.mediateka.domain.impl.LocalStorageInteractorImpl
+import com.practicum.playlistmaker.mediateka.domain.impl.PlaylistInteractorImpl
 import com.practicum.playlistmaker.player.domain.api.MediaPlayerInteractor
 import com.practicum.playlistmaker.player.domain.impl.MediaPlayerInteractorImpl
 import com.practicum.playlistmaker.search.domain.api.TrackInteractor
@@ -31,5 +35,13 @@ val interactorModule = module {
 
     factory <FavoriteTrackInteractor> {
         FavoriteTrackInteractorImpl(repository = get())
+    }
+
+    factory <LocalStorageInteractor> {
+        LocalStorageInteractorImpl(localStorageRepository = get())
+    }
+
+    factory<PlaylistInteractor> {
+        PlaylistInteractorImpl(playlistRepository = get())
     }
 }
