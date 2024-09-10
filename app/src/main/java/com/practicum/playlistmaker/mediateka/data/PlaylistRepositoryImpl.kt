@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.map
 
 class PlaylistRepositoryImpl(private val appDatabase: AppDatabase): PlaylistRepository {
 
+
     override suspend fun createPlaylist(playlist: Playlist) {
         appDatabase.playlistDao().insertPlaylist(playlist.toPlaylistEntity())
     }
