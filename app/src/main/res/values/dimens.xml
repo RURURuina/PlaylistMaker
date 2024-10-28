@@ -8,7 +8,11 @@
     <dimen name="settings_text_size">16sp</dimen>
     <dimen name="default_padding">15dp</dimen>
     <dimen name="margin26">26dp</dimen>
+    <dimen name="margin24">24dp</dimen>
     <dimen name="margin16">16dp</dimen>
+    <dimen name="margin10">10dp</dimen>
+    <dimen name="margin36">36dp</dimen>
+    <dimen name="margin60">60dp</dimen>
     <dimen name="margin48">48dp</dimen>
     <dimen name="margin110">110dp</dimen>
     <dimen name="margin124">124dp</dimen>

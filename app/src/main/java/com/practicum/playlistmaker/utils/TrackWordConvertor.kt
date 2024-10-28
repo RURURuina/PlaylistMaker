@@ -1,20 +1,29 @@
 package com.practicum.playlistmaker.utils
 
-import android.view.View
-import com.practicum.playlistmaker.R
-
 class TrackWordConvertor() {
     companion object {
-        fun getTrackCountString(count: Int, view: View): String {
-            val remainder10 = count % 10
-            val remainder100 = count % 100
 
-            return when {
-                remainder100 in 11..19 -> view.context.getString(R.string.track_count_5)
-                remainder10 == 1 -> view.context.getString(R.string.track_count_1)
-                remainder10 in 2..4 -> view.context.getString(R.string.track_count_2_4)
-                else -> view.context.getString(R.string.track_count_5)
+        fun getTrackWord(count: Int): String {
+            val trackWord = when {
+                count % 10 == 1 && count % 100 != 11 -> "трек"
+                count % 10 in 2..4 && (count % 100 !in 12..14) -> "трека"
+                else -> "треков"
+            }
+            return trackWord
         }
-    }}
+
+        fun getMinutesWord(count: Int): String {
+            val lastDigit = count % 10
+            val lastTwoDigits = count % 100
+
+            val minutesWord = when {
+                lastTwoDigits in 11..14 -> " минут"
+                lastDigit == 1 -> " минута"
+                lastDigit in 2..4 -> " минуты"
+                else -> " минут"
+            }
+            return minutesWord
+        }
+    }
 
 }

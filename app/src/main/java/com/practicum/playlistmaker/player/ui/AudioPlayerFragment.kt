@@ -36,24 +36,23 @@ class AudioPlayerFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val args: AudioPlayerFragmentArgs by navArgs()
-    //private lateinit var playButton: ImageView
-    //private lateinit var timer: TextView
+
     private lateinit var track: Track
-    //private lateinit var favoriteButton: ImageView
+
     private var adapter: BottomSheetPlaylistAdapter? = null
     private lateinit var bottomSheet: BottomSheetBehavior<LinearLayout>
+
     companion object {
         private const val TRACK_ARTWORK_SIZE = "512x512bb.jpg"
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentAudioplayerBinding.inflate(inflater, container, false)
         return binding.root
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -74,13 +73,14 @@ class AudioPlayerFragment : Fragment() {
             state = BottomSheetBehavior.STATE_HIDDEN
         }
 
-        bottomSheet.addBottomSheetCallback(object :
-        BottomSheetBehavior.BottomSheetCallback(){
+        bottomSheet.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
             override fun onStateChanged(bottomSheet: View, newState: Int) {
-                when(newState) {
+                when (newState) {
                     BottomSheetBehavior.STATE_HIDDEN -> {
                         binding.playerOverlay.isVisible = false
-                    } else -> {
+                    }
+
+                    else -> {
                         binding.playerOverlay.isVisible = true
                     }
                 }
@@ -101,7 +101,8 @@ class AudioPlayerFragment : Fragment() {
         if (track.artworkUrl100?.isNotEmpty() == true) {
             Glide.with(this).load(track.artworkUrl100!!.replaceAfterLast("/", TRACK_ARTWORK_SIZE))
                 .placeholder(R.drawable.audioplayer_placeholder)
-                .transform(RoundedCorners(TrackViewHolder.ROUNDED_CORNER_RADIUS)).into(binding.artworkUrl512)
+                .transform(RoundedCorners(TrackViewHolder.ROUNDED_CORNER_RADIUS))
+                .into(binding.artworkUrl512)
         } else {
             binding.artworkUrl512.setImageResource(R.drawable.audioplayer_placeholder)
         }
@@ -153,17 +154,18 @@ class AudioPlayerFragment : Fragment() {
         viewModel.observeTrackInPlaylistState().observe(viewLifecycleOwner) {
             makeToast(it)
         }
-        viewModel.observePlaylist().observe(viewLifecycleOwner) {playlist ->
+        viewModel.observePlaylist().observe(viewLifecycleOwner) { playlist ->
             adapter?.playlist?.clear()
             adapter?.playlist?.addAll(playlist)
             adapter?.notifyDataSetChanged()
         }
 
-        adapter?.itemClickListener = {position, tracksId, playlist ->
+        adapter?.itemClickListener = { position, tracksId, playlist ->
             viewModel.addTracksIdInPlaylist(playlist, tracksId, track)
         }
         binding.createPlaylist.setOnClickListener {
-            val action = AudioPlayerFragmentDirections.actionAudioPlayerFragmentToNewPlaylistFragment()
+            val action =
+                AudioPlayerFragmentDirections.actionAudioPlayerFragmentToNewPlaylistFragment()
             findNavController().navigate(action)
         }
     }
@@ -205,12 +207,11 @@ class AudioPlayerFragment : Fragment() {
     }
 
     private fun renderLikeButton(isFavorite: Boolean) {
-        val imageResource =
-            if (isFavorite) {
-                R.drawable.favorite
-            } else {
-                R.drawable.unfavorite
-            }
+        val imageResource = if (isFavorite) {
+            R.drawable.favorite
+        } else {
+            R.drawable.unfavorite
+        }
         binding.favorite.setImageResource(imageResource)
     }
 
@@ -226,12 +227,14 @@ class AudioPlayerFragment : Fragment() {
                 Toast.LENGTH_SHORT
             ).show()
 
-            is TrackInPlaylistState.TrackAddToPlaylist -> {Toast.makeText(
-                requireContext(),
-                getString(R.string.track_added) + " ${state.playlistName}",
-                Toast.LENGTH_SHORT
-            ).show()
-                bottomSheet.state = BottomSheetBehavior.STATE_HIDDEN}
+            is TrackInPlaylistState.TrackAddToPlaylist -> {
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.track_added) + " ${state.playlistName}",
+                    Toast.LENGTH_SHORT
+                ).show()
+                bottomSheet.state = BottomSheetBehavior.STATE_HIDDEN
+            }
 
             else -> {}
         }

@@ -21,11 +21,8 @@ private const val THEME = "playlistmaker_theme"
 
 val dataModule = module {
     single<ITunesService> {
-        Retrofit.Builder()
-            .baseUrl(baseUrl)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(ITunesService::class.java)
+        Retrofit.Builder().baseUrl(baseUrl).addConverterFactory(GsonConverterFactory.create())
+            .build().create(ITunesService::class.java)
     }
 
     single<SharedPreferences> {
@@ -50,7 +47,6 @@ val dataModule = module {
 
     single {
         Room.databaseBuilder(androidContext(), AppDatabase::class.java, "database.db")
-            .fallbackToDestructiveMigration()
-            .build()
+            .fallbackToDestructiveMigration().build()
     }
 }

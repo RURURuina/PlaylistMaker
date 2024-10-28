@@ -2,7 +2,6 @@ package com.practicum.playlistmaker.mediateka.ui
 
 import TrackAdapter
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -103,9 +102,11 @@ class FragmentFavorites : Fragment() {
             is FavoriteTracksState.Content -> {
                 showContent(state.favoriteTracks)
             }
+
             is FavoriteTracksState.Empty -> {
-                Log.d("Mediateka", "State is Empty")
-                showEmpty()}
+
+                showEmpty()
+            }
         }
     }
 
@@ -116,7 +117,6 @@ class FragmentFavorites : Fragment() {
     }
 
     private fun showContent(favoriteTracks: List<Track>) {
-        Log.d("Mediateka", "Showing content with ${favoriteTracks.size} tracks")
         favoriteTracksList.visibility = View.VISIBLE
         nothingFoundMediateka.visibility = View.GONE
         mediatekaText.visibility = View.GONE

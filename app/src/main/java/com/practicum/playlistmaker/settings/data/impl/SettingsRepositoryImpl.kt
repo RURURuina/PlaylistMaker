@@ -15,8 +15,6 @@ class SettingsRepositoryImpl(private val sharedPrefs: SharedPreferences) : Setti
     }
 
     override fun updateThemeSettings(settings: ThemeSettings) {
-        sharedPrefs.edit()
-            .putBoolean(NIGHT_THEME_KEY, settings.darkTheme)
-            .apply()
+        sharedPrefs.edit().putBoolean(NIGHT_THEME_KEY, settings.darkTheme).apply()
     }
 }

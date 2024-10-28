@@ -1,5 +1,7 @@
 package com.practicum.playlistmaker.mediateka.domain.model
 
+import java.io.Serializable
+
 data class Playlist(
     val playlistId: Int,
     val playlistName: String,
@@ -7,4 +9,4 @@ data class Playlist(
     val uri: String?,
     val tracksIdInPlaylist: List<Long>,
     val tracksCount: Int
-)
+) : Serializable

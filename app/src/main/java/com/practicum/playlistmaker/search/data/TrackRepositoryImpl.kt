@@ -15,7 +15,7 @@ class TrackRepositoryImpl(
     private val iTunesService: ITunesService,
     private val searchHistory: SearchHistory,
     private val appDatabase: AppDatabase
-    ) : TrackRepository {
+) : TrackRepository {
 
     override suspend fun searchTracks(term: String): Flow<Result<List<Track>>> = flow {
         try {
@@ -23,7 +23,7 @@ class TrackRepositoryImpl(
             if (response.isSuccessful) {
                 val results: List<Track> = response.body()?.results?.filterNotNull() ?: emptyList()
                 val favoriteTrackIds = appDatabase.favoriteTrackDao().getFavoriteTrackIds()
-                val trackWithFavoriteStatus = results.map {track: Track ->
+                val trackWithFavoriteStatus = results.map { track: Track ->
                     track.copy(isFavorite = favoriteTrackIds.contains(track.trackId))
                 }
 

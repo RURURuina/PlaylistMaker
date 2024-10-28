@@ -22,14 +22,14 @@ class PlaylistsViewModel(private val playlistInteractor: PlaylistInteractor) : V
 
     fun getSavedPlaylists() {
         viewModelScope.launch(Dispatchers.IO) {
-            playlistInteractor.getSavedPlaylists().collect {playlists ->
+            playlistInteractor.getSavedPlaylists().collect { playlists ->
                 processResult(playlists)
             }
         }
     }
 
     private fun processResult(playlists: List<Playlist>) {
-        if(playlists.isEmpty()) {
+        if (playlists.isEmpty()) {
             renderState(PlaylistState.Empty)
         } else {
             renderState(PlaylistState.Content(playlists))

@@ -21,7 +21,8 @@ import java.util.Locale
 class MediaPlayerViewModel(
     private val interactor: MediaPlayerInteractor,
     private val favoriteTrackInteractor: FavoriteTrackInteractor,
-    private val playlistInteractor: PlaylistInteractor) : ViewModel() {
+    private val playlistInteractor: PlaylistInteractor
+) : ViewModel() {
 
 
     private val _playerState = MutableLiveData<PlayerState>().apply { value = PlayerState.DEFAULT }
@@ -113,6 +114,7 @@ class MediaPlayerViewModel(
             startPlayer()
         }
     }
+
     fun onFavoriteClicked(track: Track) {
         viewModelScope.launch(Dispatchers.IO) {
             if (favoriteTrackInteractor.isTrackFavorite(track.trackId)) {
@@ -124,13 +126,15 @@ class MediaPlayerViewModel(
             }
         }
     }
+
     fun getSavedPlaylists() {
         viewModelScope.launch(Dispatchers.IO) {
-            playlistInteractor.getSavedPlaylists().collect() {playlists ->
+            playlistInteractor.getSavedPlaylists().collect() { playlists ->
                 playlistLiveData.postValue(playlists)
             }
         }
     }
+
     fun addTracksIdInPlaylist(playlist: Playlist, tracksId: List<Long>, track: Track) {
         if (track.trackId in tracksId) {
             trackInPlaylistLiveData.postValue(TrackInPlaylistState.TrackIsAlreadyInPlaylist(playlist.playlistName))

@@ -4,7 +4,6 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-
     android:gravity="center">
 
     <ImageView
@@ -37,6 +36,5 @@
         style="@style/updateButton"
         android:textAllCaps="false"
         android:layout_marginTop="20dp"/>
-
 
 </LinearLayout>

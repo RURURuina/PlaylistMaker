@@ -48,5 +48,19 @@
     <string name="track_count_1">трек</string>
     <string name="track_count_2_4">трека</string>
     <string name="add_to_playlist_string">Добавить в плейлист</string>
+    <string name="share">Поделиться</string>
+    <string name="edit">Редактировать информацию</string>
+    <string name="delete_playlist">Удалить плейлист</string>
+    <string name="editPlaylist">Редактировать</string>
+    <string name="saveChanges">Сохранить</string>
+    <string name="track_count_format">%1$d %2$s</string>
+    <string name="playlist_empty">В этом плейлисте нет треков</string>
+    <string name="delete_track">Удалить трек</string>
+    <string name="delete_track_alert">Вы уверены, что хотите удалить трек из плейлиста?</string>
+    <string name="delete">Удалить</string>
+    <string name="no_tracks_to_share">В этом плейлисте нет списка треков, которым можно поделиться</string>
+    <string name="playlist_delete_alert">Хотите удалить плейлист</string>
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
 
 </resources>

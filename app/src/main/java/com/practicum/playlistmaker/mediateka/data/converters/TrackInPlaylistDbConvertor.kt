@@ -19,4 +19,19 @@ object TrackInPlaylistDbConvertor {
             previewUrl
         )
     }
+
+    fun TrackInPlaylistEntity.toTrack(): Track {
+        return Track(
+            trackId,
+            trackName,
+            artistName,
+            trackTimeMillis,
+            artworkUrl100,
+            collectionName,
+            releaseDate,
+            primaryGenreName,
+            country,
+            previewUrl
+        )
+    }
 }

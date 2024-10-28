@@ -4,11 +4,11 @@ import com.practicum.playlistmaker.search.domain.models.Track
 
 sealed interface SearchFragmentState {
 
-    object Loading: SearchFragmentState
+    object Loading : SearchFragmentState
 
-    object Empty: SearchFragmentState
+    object Empty : SearchFragmentState
 
-    data class Content (
+    data class Content(
         val tracks: MutableList<Track?>
     ) : SearchFragmentState
 
