@@ -7,5 +7,5 @@ sealed interface PlaylistState {
         val playlist: List<Playlist>
     ) : PlaylistState
 
-    object Empty: PlaylistState
+    object Empty : PlaylistState
 }

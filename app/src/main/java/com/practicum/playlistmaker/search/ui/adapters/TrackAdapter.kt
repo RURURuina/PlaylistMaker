@@ -12,6 +12,8 @@ class TrackAdapter(private val listener: OnItemClickListener) :
 
     var trackList: MutableList<Track?> = mutableListOf()
 
+    var onLongClickListener: ((clickedTrack: Track) -> Unit)? = null
+
     @SuppressLint("NotifyDataSetChanged")
     fun updateList(trackList: MutableList<Track?>) {
         Log.d("TrackAdapter", "Updating list with ${trackList.size} items")
@@ -43,6 +45,12 @@ class TrackAdapter(private val listener: OnItemClickListener) :
             if (track != null) {
                 listener.onItemClick(track)
             }
+        }
+        holder.itemView.setOnLongClickListener {
+            if (track != null) {
+                onLongClickListener?.invoke(track)
+            }
+            true
         }
     }
 

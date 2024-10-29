@@ -21,7 +21,7 @@ class FavoriteTrackRepositoryImpl(
 
     override fun getFavoriteTracks(): Flow<List<Track>> {
         return appDatabase.favoriteTrackDao().getAllFavoriteTracks()
-            .map { it.map {entity -> entity.toTrack()} }
+            .map { it.map { entity -> entity.toTrack() } }
     }
 
     override suspend fun isTrackFavorite(trackId: Long): Boolean {

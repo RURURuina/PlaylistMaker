@@ -22,9 +22,7 @@ class FragmentPlaylists : Fragment() {
     private lateinit var playlistAdapter: PlaylistAdapter
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         binding = FragmentPlaylistsBinding.inflate(inflater, container, false)
         return binding.root
@@ -37,8 +35,16 @@ class FragmentPlaylists : Fragment() {
             val action = MediatekaFragmentDirections.actionMediatekaFragmentToNewPlaylistFragment()
             findNavController().navigate(action)
         }
+
+
         playlistAdapter = PlaylistAdapter()
         setupRecyclerView()
+
+        playlistAdapter?.itemClickListener = { _, playlist ->
+            val action =
+                MediatekaFragmentDirections.actionFragmentPlaylistsToPlaylistInfoFragment(playlist)
+            findNavController().navigate(action)
+        }
 
         playlistsViewModel.observeState().observe(viewLifecycleOwner, Observer { state ->
             render(state)
@@ -54,7 +60,7 @@ class FragmentPlaylists : Fragment() {
     }
 
     private fun render(state: PlaylistState) {
-        when(state) {
+        when (state) {
             is PlaylistState.Content -> showPlaylists(state.playlist)
             is PlaylistState.Empty -> showEmptyState()
         }

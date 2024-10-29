@@ -24,13 +24,15 @@ class MainActivity : AppCompatActivity() {
         bottomNavigationView.setupWithNavController(navController)
         val line = findViewById<View>(R.id.line)
 
-        navController.addOnDestinationChangedListener {_, destination, _ ->
+        navController.addOnDestinationChangedListener { _, destination, _ ->
             when (destination.id) {
-                R.id.newPlaylistFragment, R.id.audioPlayerFragment -> {
+                R.id.newPlaylistFragment, R.id.audioPlayerFragment, R.id.playlistInfoFragment -> {
                     bottomNavigationView.isVisible = false
                     line.isVisible = false
 
-                } else -> {
+                }
+
+                else -> {
                     bottomNavigationView.isVisible = true
                     line.isVisible = true
                 }

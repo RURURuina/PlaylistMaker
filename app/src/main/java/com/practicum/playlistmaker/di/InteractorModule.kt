@@ -33,11 +33,11 @@ val interactorModule = module {
         SharingInteractorImpl(externalNavigator = get())
     }
 
-    factory <FavoriteTrackInteractor> {
+    factory<FavoriteTrackInteractor> {
         FavoriteTrackInteractorImpl(repository = get())
     }
 
-    factory <LocalStorageInteractor> {
+    factory<LocalStorageInteractor> {
         LocalStorageInteractorImpl(localStorageRepository = get())
     }
 

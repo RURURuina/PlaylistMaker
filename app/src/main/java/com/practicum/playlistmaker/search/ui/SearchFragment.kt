@@ -91,7 +91,8 @@ class SearchFragment : Fragment() {
                     isClickAllowed = false
                     clickDebounce(Unit)
                     hideSearchHistory()
-                    val action = SearchFragmentDirections.actionSearchFragmentToAudioPlayerFragment(track)
+                    val action =
+                        SearchFragmentDirections.actionSearchFragmentToAudioPlayerFragment(track)
                     findNavController().navigate(action)
                 }
             }
@@ -150,11 +151,12 @@ class SearchFragment : Fragment() {
                         hidePlaceholders()
                     }
                 }
+
                 is SearchFragmentState.Error -> showServerErrorPlaceholder(state.errorMessage)
                 is SearchFragmentState.History -> showSearchHistory(state.tracks)
             }
         }
-        viewModel.searchResult.observe(viewLifecycleOwner) {results ->
+        viewModel.searchResult.observe(viewLifecycleOwner) { results ->
             if (results.isNotEmpty()) {
                 showContent(results)
             }
@@ -250,6 +252,7 @@ class SearchFragment : Fragment() {
         super.onResume()
         isClickAllowed = true
     }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

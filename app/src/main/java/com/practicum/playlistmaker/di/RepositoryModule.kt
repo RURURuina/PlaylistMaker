@@ -21,8 +21,9 @@ import org.koin.dsl.module
 val repositoryModule = module {
 
     single<TrackRepository> {
-        TrackRepositoryImpl(iTunesService = get(), searchHistory = get(),
-            appDatabase = get())
+        TrackRepositoryImpl(
+            iTunesService = get(), searchHistory = get(), appDatabase = get()
+        )
     }
 
     factory<MediaPlayerRepository> {
@@ -39,7 +40,7 @@ val repositoryModule = module {
 
     factory { TrackDbConvertor }
 
-    single<FavoriteTrackRepository>{
+    single<FavoriteTrackRepository> {
         FavoriteTrackRepositoryImpl(appDatabase = get())
     }
 

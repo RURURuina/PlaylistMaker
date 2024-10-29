@@ -30,14 +30,15 @@ object PlaylistDbConvertor {
         )
 
     }
+
     @TypeConverter
     private fun fromListLongToString(value: List<Long>): String {
         return Gson().toJson(value)
     }
 
     @TypeConverter
-    private fun fromStingToListLong(value:String): List<Long> {
-        val listType = object: TypeToken<List<Long>>() {}.type
+    private fun fromStingToListLong(value: String): List<Long> {
+        val listType = object : TypeToken<List<Long>>() {}.type
         return Gson().fromJson(value, listType)
     }
 }

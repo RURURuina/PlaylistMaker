@@ -9,10 +9,9 @@ import com.practicum.playlistmaker.mediateka.domain.model.Playlist
 class BottomSheetPlaylistAdapter() : RecyclerView.Adapter<BottomSheetPlaylistViewHolder>() {
 
     var itemClickListener: ((Int, List<Long>, Playlist) -> Unit)? = null
-    val playlist:MutableList<Playlist> = mutableListOf()
+    val playlist: MutableList<Playlist> = mutableListOf()
     override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int
+        parent: ViewGroup, viewType: Int
     ): BottomSheetPlaylistViewHolder {
         val binding =
             BottomSheetViewBinding.inflate(LayoutInflater.from(parent.context), parent, false)

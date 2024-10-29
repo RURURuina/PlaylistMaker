@@ -23,11 +23,12 @@ class FavoritesViewModel(
 
     fun getFavoriteTracks() {
         viewModelScope.launch {
-            favoriteTrackInteractor.getFavoriteTracks().collect() {favoriteTracks ->
+            favoriteTrackInteractor.getFavoriteTracks().collect() { favoriteTracks ->
                 processResult(favoriteTracks)
             }
         }
     }
+
     private fun processResult(favoriteTracks: List<Track>) {
         if (favoriteTracks.isEmpty()) {
             renderState(FavoriteTracksState.Empty)

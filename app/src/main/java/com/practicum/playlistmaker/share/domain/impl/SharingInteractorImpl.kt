@@ -17,4 +17,8 @@ class SharingInteractorImpl(
     override fun contactSupport() {
         externalNavigator.sendEmail()
     }
+
+    override fun sharePlaylist(message: String) {
+        externalNavigator.sharePlaylist(message)
+    }
 }

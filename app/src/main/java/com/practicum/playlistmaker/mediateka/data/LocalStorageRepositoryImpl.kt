@@ -9,23 +9,29 @@ import com.practicum.playlistmaker.mediateka.domain.LocalStorageRepository
 import java.io.File
 import java.io.FileOutputStream
 
-class LocalStorageRepositoryImpl(private val context: Context): LocalStorageRepository {
+class LocalStorageRepositoryImpl(private val context: Context) : LocalStorageRepository {
 
     companion object {
         const val FILE_NAME = "cover_playlist.jpg"
         const val DIRECTORY_NAME = "playlist"
     }
-    override fun saveImageToLocalStorage(uri: Uri) {
+
+    override fun saveImageToLocalStorage(uri: Uri): String {
+        val fileName = generateFileName()
         val filePath =
             File(context.getExternalFilesDir(Environment.DIRECTORY_PICTURES), DIRECTORY_NAME)
         if (!filePath.exists()) {
             filePath.mkdirs()
         }
-        val file = File(filePath, FILE_NAME)
+        val file = File(filePath, fileName)
         val inputStream = context.contentResolver.openInputStream(uri)
         val outputStream = FileOutputStream(file)
-        BitmapFactory
-            .decodeStream(inputStream)
+        BitmapFactory.decodeStream(inputStream)
             .compress(Bitmap.CompressFormat.JPEG, 30, outputStream)
+        return file.toURI().toString()
+    }
+
+    private fun generateFileName(): String {
+        return "playlist_cover_${System.currentTimeMillis()}.jpg"
     }
 }

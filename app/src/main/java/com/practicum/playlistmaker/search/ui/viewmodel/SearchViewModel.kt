@@ -20,7 +20,6 @@ class SearchViewModel(private val interactor: TrackInteractor) : ViewModel() {
     val searchResult = _searchResult
 
 
-
     var currentQuery: String = ""
 
     fun searchTracks(term: String) {
@@ -34,24 +33,20 @@ class SearchViewModel(private val interactor: TrackInteractor) : ViewModel() {
         _screenState.value = SearchFragmentState.Loading
 
         viewModelScope.launch {
-            interactor.searchTracks(term)
-                .catch { e ->
+            interactor.searchTracks(term).catch { e ->
                     _screenState.value = SearchFragmentState.Error(e.message ?: "Unknown error")
-                }
-                .collect { result ->
-                    result.fold(
-                        onSuccess = {
-                            _searchResult.value = it.toMutableList()
-                            if (it.isEmpty()) {
-                                _screenState.value = SearchFragmentState.Empty
-                            } else {
-                                _screenState.value = SearchFragmentState.Content(it.toMutableList())
-                            }
-                        },
-                        onFailure = {
-                            _screenState.value = SearchFragmentState.Error(it.message ?: "Unknown error")
+                }.collect { result ->
+                    result.fold(onSuccess = {
+                        _searchResult.value = it.toMutableList()
+                        if (it.isEmpty()) {
+                            _screenState.value = SearchFragmentState.Empty
+                        } else {
+                            _screenState.value = SearchFragmentState.Content(it.toMutableList())
                         }
-                    )
+                    }, onFailure = {
+                        _screenState.value =
+                            SearchFragmentState.Error(it.message ?: "Unknown error")
+                    })
                 }
         }
     }

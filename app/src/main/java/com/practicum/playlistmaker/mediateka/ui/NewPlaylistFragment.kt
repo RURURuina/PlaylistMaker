@@ -20,20 +20,26 @@ import com.practicum.playlistmaker.databinding.FragmentNewPlaylistBinding
 import com.practicum.playlistmaker.mediateka.ui.viewmodel.NewPlaylistViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class NewPlaylistFragment : Fragment() {
+open class NewPlaylistFragment : Fragment() {
 
-    private val newPlaylistViewModel by viewModel<NewPlaylistViewModel>()
+    open val newPlaylistViewModel by viewModel<NewPlaylistViewModel>()
+
+
 
     private lateinit var  toastPlaylistName: String
 
-    private lateinit var pickVisualMedia: ActivityResultLauncher<PickVisualMediaRequest>
+    lateinit var pickVisualMedia: ActivityResultLauncher<PickVisualMediaRequest>
 
     lateinit var alertDialog: MaterialAlertDialogBuilder
 
-    private var isImageAdd: Boolean = false
+    var isImageAdd: Boolean = false
 
     private var _binding: FragmentNewPlaylistBinding? = null
-    private val binding get() = _binding!!
+    val binding get() = _binding!!
+
+    open lateinit var  playlistNameEditText: TextInputEditText
+
+    open lateinit var playlistDescriptionEditText: TextInputEditText
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -52,25 +58,23 @@ class NewPlaylistFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val playlistNameEditText = binding.playlistName.findViewById<TextInputEditText>(R.id.playlistName)
-
-        val playlistDescriptionEditText = binding.playlistDescription.findViewById<TextInputEditText>(R.id.playlistDescription)
+        initEditText()
 
         playlistNameEditText.doOnTextChanged { text, _, _, _ ->
             binding.createPlaylistButton.isEnabled = !text.isNullOrBlank()
-            newPlaylistViewModel.setPlaylistName(text.toString())
+            newPlaylistViewModel.playlistName = text.toString()
             toastPlaylistName = text.toString()
         }
 
         playlistDescriptionEditText.doOnTextChanged {text, _, _, _ ->
-            newPlaylistViewModel.setPlaylistDescription(text.toString())
+            newPlaylistViewModel.playlistDescription = text.toString()
         }
 
         pickVisualMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) {uri ->
             if (uri != null) {
                 binding.newPlaylistIc.setImageURI(uri)
-                newPlaylistViewModel.saveImageToLocalStorage(uri)
-                newPlaylistViewModel.setUri(uri)
+                val savedUri = newPlaylistViewModel.saveImageToLocalStorage(uri)
+                newPlaylistViewModel.uri = savedUri
                 isImageAdd = true
             }
         }
@@ -101,6 +105,7 @@ class NewPlaylistFragment : Fragment() {
         )
         binding.createPlaylistButton.setOnClickListener {
             newPlaylistViewModel.createPlaylist()
+
             findNavController().navigateUp()
             Toast.makeText(
                 requireContext(),
@@ -115,7 +120,15 @@ class NewPlaylistFragment : Fragment() {
         _binding = null
     }
 
-    private fun onBackPressed(
+    private fun initEditText() {
+        playlistNameEditText =
+            binding.playlistName.findViewById(R.id.playlistName)
+
+        playlistDescriptionEditText =
+            binding.playlistDescription.findViewById(R.id.playlistDescription)
+    }
+
+    open fun onBackPressed(
         playlistNameEditText: TextInputEditText,
         playlistDescriptionEditText: TextInputEditText
     ) {

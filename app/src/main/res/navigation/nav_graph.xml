@@ -27,6 +27,9 @@
         <action
             android:id="@+id/action_mediatekaFragment_to_newPlaylistFragment"
             app:destination="@id/newPlaylistFragment" />
+        <action
+            android:id="@+id/action_fragmentPlaylists_to_PlaylistInfoFragment"
+            app:destination="@+id/playlistInfoFragment"/>
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
@@ -52,6 +55,32 @@
     <fragment
         android:id="@+id/fragmentPlaylists"
         android:name="com.practicum.playlistmaker.mediateka.ui.FragmentPlaylists"
-        android:label="FragmentPlaylists" />
+        android:label="FragmentPlaylists"/>
+
+
+
+    <fragment
+        android:id="@+id/playlistInfoFragment"
+        android:name="com.practicum.playlistmaker.mediateka.ui.PlaylistInfoFragment"
+        android:label="PlaylistInfoFragment">
+        <argument
+            android:name="playlist"
+            app:argType="com.practicum.playlistmaker.mediateka.domain.model.Playlist"/>
+        <action
+            android:id="@+id/action_playlistInfoFragment_to_PlaylistEditFragment"
+            app:destination="@+id/PlaylistEditFragment"/>
+        <action
+            android:id="@+id/action_playlistInfoFragment_to_audioPlayerFragment"
+            app:destination="@+id/audioPlayerFragment"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/PlaylistEditFragment"
+        android:name="com.practicum.playlistmaker.mediateka.ui.PlaylistEditFragment"
+        android:label="PlaylistEditFragment">
+        <argument
+            android:name="playlist"
+            app:argType="com.practicum.playlistmaker.mediateka.domain.model.Playlist"/>
+    </fragment>
 
 </navigation>

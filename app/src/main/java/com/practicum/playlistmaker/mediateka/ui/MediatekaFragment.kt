@@ -16,9 +16,7 @@ class MediatekaFragment : Fragment() {
 
     private lateinit var binding: FragmentMediatekaBinding
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         super.onCreate(savedInstanceState)
         binding = FragmentMediatekaBinding.inflate(inflater, container, false)

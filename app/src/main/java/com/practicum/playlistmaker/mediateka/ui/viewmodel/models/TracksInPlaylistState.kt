@@ -2,10 +2,10 @@ package com.practicum.playlistmaker.mediateka.ui.viewmodel.models
 
 import com.practicum.playlistmaker.search.domain.models.Track
 
-sealed interface FavoriteTracksState {
+sealed interface TracksInPlaylistState {
     data class Content(
-        val favoriteTracks: List<Track>
-    ) : FavoriteTracksState
+        val tracksInPlaylist: List<Track>
+    ) : TracksInPlaylistState
 
-    object Empty : FavoriteTracksState
+    object Empty : TracksInPlaylistState
 }
