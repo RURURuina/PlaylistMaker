@@ -28,7 +28,7 @@ JDK 11+
 Установка и запуск
 
 Клонируйте репозиторий:
-git clone https://github.com/your-repo/PlaylistMaker.git
+git clone https://github.com/RURURuina/PlaylistMaker
 Откройте проект в Android Studio.
 Установите зависимости через Gradle.
 Запустите приложение на эмуляторе или реальном устройстве.
